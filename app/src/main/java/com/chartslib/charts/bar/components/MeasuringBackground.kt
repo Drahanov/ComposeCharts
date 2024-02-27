@@ -19,7 +19,10 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
+import com.chartslib.charts.bar.models.HorizontalLine
+import com.chartslib.charts.bar.models.HorizontalLinesPattern
 import com.chartslib.charts.bar.models.MeasuringLines
+import com.chartslib.charts.bar.models.UtilityLines
 
 @Composable
 fun MeasuringBackground(
@@ -136,5 +139,25 @@ fun MeasuringBackground(
                 horizontalLineY += (height - (xDecorationLineWidth)) / measureLinesX.steps
             }
         }
+    }
+}
+
+@Composable
+fun UtilityBackground(
+    utilityLines: UtilityLines
+) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        /**
+         * Draw horizontal lines.
+         * If @param utilityLines.horizontal lines is instance of HorizontalLinesPattern.FixedSize
+         * we have to draw fixed size of lines which are evenly sprayed along the entire length.
+         */
+        if (utilityLines.horizontalLines is HorizontalLinesPattern.FixedSize) {
+            val lines = utilityLines.horizontalLines.lines
+            for (line in lines) {
+
+            }
+        }
+
     }
 }

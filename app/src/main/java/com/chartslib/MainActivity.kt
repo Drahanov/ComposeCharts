@@ -21,6 +21,11 @@ import com.chartslib.charts.bar.components.BarChart
 import com.chartslib.charts.bar.models.Axis
 import com.chartslib.charts.bar.models.BarChartConfiguration
 import com.chartslib.charts.bar.models.BarColumnModel
+import com.chartslib.charts.bar.models.HorizontalLine
+import com.chartslib.charts.bar.models.HorizontalLinesPattern
+import com.chartslib.charts.bar.models.UtilityLines
+import com.chartslib.charts.bar.models.VerticalLine
+import com.chartslib.charts.bar.models.VerticalLinesPattern
 import com.chartslib.ui.theme.ChartsLibTheme
 
 class MainActivity : ComponentActivity() {
@@ -68,6 +73,14 @@ class MainActivity : ComponentActivity() {
                                     steps = listOfData.size,
                                     label = { month[it] },
                                     maxValue = listOfData.size.toFloat()
+                                ),
+                                utilityLines = UtilityLines(
+                                    horizontalLines = HorizontalLinesPattern.FixedSize(
+                                        lines = listOf(HorizontalLine())
+                                    ),
+                                    verticalLines = VerticalLinesPattern.FixedSize(
+                                        lines = listOf()
+                                    )
                                 )
                             )
                         )

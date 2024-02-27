@@ -41,5 +41,6 @@ data class BarChartConfiguration(
     val indicatorWidth: Dp = 3.dp,
     var minColumnWidth: Dp = 20.dp,
     var maxColumnWidth: Dp = 50.dp,
+    val utilityLines: UtilityLines,
     val onSelected: (Long) -> Unit = {}
 )

@@ -77,6 +77,10 @@ fun BarChart(
             biggestYLabel = biggestLabelSize,
             columnWidth = columnWidth.value
         )
+
+        UtilityBackground(
+
+        )
         Canvas(
             modifier = Modifier
                 .fillMaxSize()
