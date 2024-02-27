@@ -8,6 +8,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.foundation.Canvas
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.AnnotatedString
@@ -26,9 +28,11 @@ fun MeasuringBackground(
     measureLinesY: MeasuringLines,
     yLabelsMaxWidth: Dp,
     yLabels: (Int) -> String,
+    xLabels: (Int) -> String,
     xLabelTextStyle: TextStyle,
     yLabelTextStyle: TextStyle,
     biggestYLabel: String,
+    columnWidth: Float
 ) {
     Box(modifier = modifier) {
         val context = LocalContext.current
@@ -70,6 +74,34 @@ fun MeasuringBackground(
                     size = Size(yDecorationLineWidth, height)
                 )
                 verticalLineX += (width - (yDecorationLineWidth)) / measureLinesY.steps
+            }
+
+            var horizontalTextStart = 0f
+            for (text in 0 until measureLinesY.steps) {
+                val text = xLabels(text)
+                val textSize = Paint().apply {
+                    textSize =
+                        xLabelTextStyle.fontSize.value * scaledDensity
+                }.measureText(text)
+
+                val measuredText = textMeasurer.measure(
+                    AnnotatedString(text),
+                    constraints = Constraints.fixed(
+                        width = columnWidth.toInt(),
+                        height = xLabelFontHeight.toInt()
+                    ),
+                    overflow = TextOverflow.Ellipsis,
+                    style = xLabelTextStyle
+                )
+
+                drawText(
+                    measuredText, topLeft = Offset(
+                        horizontalTextStart,
+                        height
+                    )
+                )
+                horizontalTextStart += columnWidth
+
             }
 
             //draw horizontal measuringLines

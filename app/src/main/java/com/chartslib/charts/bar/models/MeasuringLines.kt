@@ -18,3 +18,39 @@ data class MeasuringLines(
     val steps: Int,
     val width: Dp = 1.dp
 )
+
+data class UtilityLines(
+
+)
+
+sealed class UtilityLinesPattern {
+    data class EveryDp(val everyDp: Dp, ): UtilityLinesPattern()
+}
+
+data class HorizontalLine(
+    val isShown: Boolean = true,
+    val brush: Brush = SolidColor(Color.LightGray),
+    val width: Dp = 1.dp,
+    val label: String = "",
+    val alignment: HorizontalLineAlignment = HorizontalLineAlignment.CENTERED
+)
+
+enum class HorizontalLineAlignment {
+    ABOVE_LINE,
+    UNDER_LINE,
+    CENTERED
+}
+
+data class VerticalLine(
+    val isShown: Boolean = true,
+    val brush: Brush = SolidColor(Color.LightGray),
+    val label: String = "",
+    val width: Dp = 1.dp,
+    val alignment: Float = VerticalLineAlignment.CENTERED.value
+)
+
+enum class VerticalLineAlignment(val value: Float) {
+    AFTER_LINE(1f),
+    BEFORE_LINE(2f),
+    CENTERED(3f)
+}

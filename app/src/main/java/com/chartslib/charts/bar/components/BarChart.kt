@@ -71,9 +71,11 @@ fun BarChart(
             measureLinesY = chartConfiguration.axisX.measuringLines,
             yLabelsMaxWidth = 20.dp,
             yLabels = chartConfiguration.axisY.label,
+            xLabels = chartConfiguration.axisX.label,
             xLabelTextStyle = chartConfiguration.axisX.labelStyle,
             yLabelTextStyle = chartConfiguration.axisY.labelStyle,
             biggestYLabel = biggestLabelSize,
+            columnWidth = columnWidth.value
         )
         Canvas(
             modifier = Modifier
@@ -148,29 +150,29 @@ fun BarChart(
                         color = column.color,
                         cornerRadius = CornerRadius(5f),
                     )
-
-                    val text =
-                        chartConfiguration.axisX.label(chartConfiguration.columns.indexOf(column))
-                    val textSize = Paint().apply {
-                        textSize =
-                            chartConfiguration.axisX.labelStyle.fontSize.value * scaledDensity
-                    }.measureText(text)
-
-                    val measuredText = textMeasurer.measure(
-                        AnnotatedString(text),
-                        constraints = Constraints.fixed(
-                            width = ((perColumn - spaceBetween)).toInt(),
-                            height = textHeight.toInt()
-                        ),
-                        overflow = TextOverflow.Ellipsis,
-                        style = chartConfiguration.axisX.labelStyle
-                    )
-                    drawText(
-                        measuredText, topLeft = Offset(
-                            if (textSize < ((perColumn - spaceBetween)).toInt()) start + (perColumn - spaceBetween - textSize) / 2 else start,
-                            height - textHeight
-                        )
-                    )
+//
+//                    val text =
+//                        chartConfiguration.axisX.label(chartConfiguration.columns.indexOf(column))
+//                    val textSize = Paint().apply {
+//                        textSize =
+//                            chartConfiguration.axisX.labelStyle.fontSize.value * scaledDensity
+//                    }.measureText(text)
+//
+//                    val measuredText = textMeasurer.measure(
+//                        AnnotatedString(text),
+//                        constraints = Constraints.fixed(
+//                            width = ((perColumn - spaceBetween)).toInt(),
+//                            height = textHeight.toInt()
+//                        ),
+//                        overflow = TextOverflow.Ellipsis,
+//                        style = chartConfiguration.axisX.labelStyle
+//                    )
+//                    drawText(
+//                        measuredText, topLeft = Offset(
+//                            if (textSize < ((perColumn - spaceBetween)).toInt()) start + (perColumn - spaceBetween - textSize) / 2 else start,
+//                            height - textHeight
+//                        )
+//                    )
                     start += perColumn
                 }
             }
