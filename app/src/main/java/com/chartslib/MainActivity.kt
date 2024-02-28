@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.chartslib.charts.bar.components.BarChart
@@ -76,10 +77,56 @@ class MainActivity : ComponentActivity() {
                                 ),
                                 utilityLines = UtilityLines(
                                     horizontalLines = HorizontalLinesPattern.FixedSize(
-                                        lines = listOf(HorizontalLine())
+                                        lines = listOf(
+                                            HorizontalLine(label = "Hello"),
+                                            HorizontalLine(),
+                                        )
                                     ),
                                     verticalLines = VerticalLinesPattern.FixedSize(
-                                        lines = listOf()
+                                        lines = listOf(
+                                            VerticalLine(lineWidth = 1.dp),
+                                            VerticalLine()
+                                        )
+                                    )
+                                )
+                            )
+                        )
+
+                        BarChart(
+                            chartConfiguration = BarChartConfiguration(
+                                modifier = Modifier
+                                    .background(Color.White)
+                                    .padding(10.dp)
+                                    .height(200.dp),
+                                columns = listOfData,
+                                paddingBetweenColumns = 0.3f,
+                                axisX = Axis(
+                                    steps = listOfData.size,
+                                    label = { month[it] },
+                                    maxValue = listOfData.size.toFloat()
+                                ),
+                                utilityLines = UtilityLines(
+                                    horizontalLines = HorizontalLinesPattern.EveryDp(
+                                        everyDp = 25.dp,
+                                        firstLine = HorizontalLine(lineWidth = 1.dp),
+                                        lastLine = HorizontalLine(lineWidth = 1.dp, lineBrush = SolidColor(Color.Red)),
+                                        lines = { index ->
+                                            if (index == 0)
+                                                HorizontalLine()
+                                            else
+                                                HorizontalLine()
+                                        }
+                                    ),
+                                    verticalLines = VerticalLinesPattern.EveryDp(
+                                        everyDp = 25.dp,
+                                        firstLine = VerticalLine(lineWidth = 1.dp),
+                                        lastLine = VerticalLine(lineWidth = 1.dp, lineBrush = SolidColor(Color.Red)),
+                                        lines = { index ->
+                                            if (index == 0)
+                                                VerticalLine()
+                                            else
+                                                VerticalLine()
+                                        }
                                     )
                                 )
                             )

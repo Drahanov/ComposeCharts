@@ -23,13 +23,25 @@ data class MeasuringLines(
 data class UtilityLines(
     val horizontalLines: HorizontalLinesPattern,
     val verticalLines: VerticalLinesPattern,
+
+    val horizontalLabelsTextStyle: TextStyle = TextStyle(),
+    val verticalLabelsTextStyle: TextStyle = TextStyle(),
+
+    val horizontalLabelsMaxLines: Int = 1,
+    val verticalLabelsMaxLines: Int = 1,
+
+    val horizontalLinesLabelAlignment: HorizontalLineAlignment = HorizontalLineAlignment.CENTERED,
+    val horizontalLabelsWidth: Dp = 10.dp
 )
 
 sealed class HorizontalLinesPattern {
     data class EveryDp(
         val everyDp: Dp,
-        val lines: List<HorizontalLine>,
-        val specialLines: Map<Int, HorizontalLine>
+        val lineDefault: HorizontalLine = HorizontalLine(),
+
+        val firstLine: HorizontalLine = lineDefault,
+        val lastLine: HorizontalLine = lineDefault,
+        val lines: (Int) -> HorizontalLine? = { lineDefault },
     ) : HorizontalLinesPattern()
 
     data class FixedSize(
@@ -40,8 +52,11 @@ sealed class HorizontalLinesPattern {
 sealed class VerticalLinesPattern {
     data class EveryDp(
         val everyDp: Dp,
-        val lines: List<VerticalLine>,
-        val specialLines: Map<Int, VerticalLine>
+        val lineDefault: VerticalLine = VerticalLine(),
+
+        val firstLine: VerticalLine = lineDefault,
+        val lastLine: VerticalLine = lineDefault,
+        val lines: (Int) -> VerticalLine? = { lineDefault },
     ) : VerticalLinesPattern()
 
     data class FixedSize(
@@ -50,30 +65,21 @@ sealed class VerticalLinesPattern {
 }
 
 data class HorizontalLine(
-    val isShown: Boolean = true,
-    val brush: Brush = SolidColor(Color.LightGray),
-    val width: Dp = 1.dp,
+    val isLineVisible: Boolean = true,
+    val lineBrush: Brush = SolidColor(Color.LightGray),
+    val lineWidth: Dp = 1.dp,
+
     val label: String = "",
-    val labelStyle: TextStyle = TextStyle(),
-    val maxLabelLines: Int = 1,
-    val alignment: HorizontalLineAlignment = HorizontalLineAlignment.CENTERED
 )
 
 data class VerticalLine(
-    val isShown: Boolean = true,
-    val brush: Brush = SolidColor(Color.LightGray),
-    val width: Dp = 1.dp,
+    val isLineVisible: Boolean = true,
+    val lineBrush: Brush = SolidColor(Color.LightGray),
+    val lineWidth: Dp = 1.dp,
+
     val label: String = "",
-    val labelStyle: TextStyle,
-    val maxLabelLines: Int = 1,
-    val alignment: VerticalLineAlignment = VerticalLineAlignment.CENTERED
 )
 
-enum class VerticalLineAlignment {
-    AFTER_LINE,
-    BEFORE_LINE,
-    CENTERED
-}
 
 enum class HorizontalLineAlignment {
     ABOVE_LINE,

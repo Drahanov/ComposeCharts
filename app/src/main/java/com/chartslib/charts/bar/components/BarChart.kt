@@ -65,21 +65,21 @@ fun BarChart(
     Box(
         modifier = chartConfiguration.modifier.clipToBounds()
     ) {
-        MeasuringBackground(
-            modifier = Modifier.fillMaxSize(),
-            measureLinesX = chartConfiguration.axisY.measuringLines,
-            measureLinesY = chartConfiguration.axisX.measuringLines,
-            yLabelsMaxWidth = 20.dp,
-            yLabels = chartConfiguration.axisY.label,
-            xLabels = chartConfiguration.axisX.label,
-            xLabelTextStyle = chartConfiguration.axisX.labelStyle,
-            yLabelTextStyle = chartConfiguration.axisY.labelStyle,
-            biggestYLabel = biggestLabelSize,
-            columnWidth = columnWidth.value
-        )
+//        MeasuringBackground(
+//            modifier = Modifier.fillMaxSize(),
+//            measureLinesX = chartConfiguration.axisY.measuringLines,
+//            measureLinesY = chartConfiguration.axisX.measuringLines,
+//            yLabelsMaxWidth = 20.dp,
+//            yLabels = chartConfiguration.axisY.label,
+//            xLabels = chartConfiguration.axisX.label,
+//            xLabelTextStyle = chartConfiguration.axisX.labelStyle,
+//            yLabelTextStyle = chartConfiguration.axisY.labelStyle,
+//            biggestYLabel = biggestLabelSize,
+//            columnWidth = columnWidth.value
+//        )
 
         UtilityBackground(
-
+            utilityLines = chartConfiguration.utilityLines
         )
         Canvas(
             modifier = Modifier
