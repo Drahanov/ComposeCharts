@@ -1,17 +1,22 @@
 package com.chartslib.charts.bar.components
 
 import android.graphics.Paint
+import android.graphics.text.MeasuredText
+import android.util.Log
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.foundation.Canvas
-import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
@@ -20,6 +25,7 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import com.chartslib.charts.bar.models.HorizontalLine
+import com.chartslib.charts.bar.models.HorizontalLineAlignment
 import com.chartslib.charts.bar.models.HorizontalLinesPattern
 import com.chartslib.charts.bar.models.MeasuringLines
 import com.chartslib.charts.bar.models.UtilityLines
@@ -150,10 +156,20 @@ fun UtilityBackground(
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         val density = LocalDensity.current
+        val textMeasurer = rememberTextMeasurer()
 
         Canvas(modifier = Modifier.fillMaxSize()) {
-            val width = size.width - utilityLines.horizontalLabelsWidth.toPx()
+//
+//            val extraSpaceForYLabels = when (utilityLines.horizontalLinesLabelAlignment) {
+//                HorizontalLineAlignment.CENTERED -> utilityLines.verticalSpaceForText.toPx() / 2
+//                HorizontalLineAlignment.ABOVE_LINE -> utilityLines.verticalSpaceForText.toPx()
+//                else -> 0f
+//            }
+
+            val width = size.width
             val height = size.height
+
+            val horizontalLines = getHorizontalLines(utilityLines.horizontalLines, height, density)
 
             /**
              * Draw horizontal lines.
@@ -164,32 +180,63 @@ fun UtilityBackground(
             if (utilityLines.horizontalLines is HorizontalLinesPattern.FixedSize) {
                 val lines = utilityLines.horizontalLines.lines
 
+                val measuredTexts = HashMap<Int, TextLayoutResult>()
                 var linesWidthSum = 0f
-                var longestWord = ""
+                var labelWidth = 0f
                 for (line in lines) {
                     linesWidthSum += line.lineWidth.toPx()
-                    longestWord = if (longestWord.length < line.label.length) line.label else longestWord
+                    val measuredText =
+                        textMeasurer.measure(
+                            text = AnnotatedString(line.label),
+                            style = utilityLines.yLabelsPreferences.style,
+                            maxLines = utilityLines.yLabelsPreferences.maxLines,
+                            constraints = Constraints(
+                                maxWidth = utilityLines.yLabelsPreferences.maxWidth.toPx().toInt()
+                            ),
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    measuredTexts.put(measuredTexts.size, measuredText)
+                    if (measuredText.size.width > labelWidth) labelWidth =
+                        measuredText.size.width.toFloat()
                 }
 
-//                val horizontalLabelWidth = measureBiggestLabelWidth(
-//                    longestWord = longestWord,
-//                    textStyle = utilityLines.horizontalLabelsTextStyle,
-//                    maxWidth = utilityLines.horizontalLabelsMaxWidth,
-//                    localDensity = density
-//                )
+                val internalWidth = width - labelWidth
 
+                drawRect(
+                    topLeft = Offset(0f, 0f),
+                    size = Size(height = height, width = labelWidth),
+                    brush = SolidColor(
+                        Color.Unspecified
+                    )
+                )
+                drawText(
+                    measuredTexts[2]!!,
+                    topLeft = Offset(0f, 0f),
+                    )
                 for (line in lines) {
                     val lineWidthPx = with(density) { line.lineWidth.toPx() }
 
                     drawRect(
-                        topLeft = Offset(utilityLines.horizontalLabelsWidth.toPx(), horizontalLineYStart),
+                        topLeft = Offset(
+                            labelWidth,
+                            horizontalLineYStart
+                        ),
                         brush = line.lineBrush,
-                        size = Size(height = lineWidthPx, width = width)
+                        size = Size(height = lineWidthPx, width = internalWidth)
                     )
 
-                    horizontalLineYStart += (height - linesWidthSum) / (lines.size - 1) + line.lineWidth.toPx()
+
+                    val step = (height - linesWidthSum) / (lines.size - 1) + line.lineWidth.toPx()
+                    val textPosition =
+                        if (utilityLines.horizontalLinesLabelAlignment == HorizontalLineAlignment.ABOVE_LINE) horizontalLineYStart
+                        else if (utilityLines.horizontalLinesLabelAlignment == HorizontalLineAlignment.CENTERED) horizontalLineYStart + step / 2
+                        else horizontalLineYStart + step
+
+//                    drawText(measuredText, topLeft = Offset(0f, textPosition))
+                    horizontalLineYStart += step
                 }
-            } else if (utilityLines.horizontalLines is HorizontalLinesPattern.EveryDp) {
+            }
+            else if (utilityLines.horizontalLines is HorizontalLinesPattern.EveryDp) {
                 /**
                  * If [utilityLines.horizontalLines] lines is instance of [HorizontalLinesPattern.EveryDp]
                  * we have to draw one line every N dp. The width of the entire available area is divided by the N dp value.
@@ -227,7 +274,10 @@ fun UtilityBackground(
                         else defaultLine
 
                     drawRect(
-                        topLeft = Offset(utilityLines.horizontalLabelsWidth.toPx(), horizontalLineYStart),
+                        topLeft = Offset(
+                            0f,
+                            horizontalLineYStart
+                        ),
                         brush = line.lineBrush,
                         size = Size(height = line.lineWidth.toPx(), width = width)
                     )
@@ -241,7 +291,7 @@ fun UtilityBackground(
              * If [utilityLines.verticalLines] lines is instance of [VerticalLinesPattern.FixedSize]
              * we have to draw fixed size of lines which are evenly sprayed along the entire length of x line.
              */
-            var verticalLineXStart = utilityLines.horizontalLabelsWidth.toPx()
+            var verticalLineXStart = 0f
             if (utilityLines.verticalLines is VerticalLinesPattern.FixedSize) {
                 val lines = utilityLines.verticalLines.lines
 
@@ -260,7 +310,8 @@ fun UtilityBackground(
                     )
                     verticalLineXStart += (width - linesWidthSum) / (lines.size - 1) + line.lineWidth.toPx()
                 }
-            } else if (utilityLines.verticalLines is VerticalLinesPattern.EveryDp) {
+            }
+            else if (utilityLines.verticalLines is VerticalLinesPattern.EveryDp) {
                 /**
                  * If [utilityLines.verticalLines] lines is instance of [VerticalLinesPattern.EveryDp]
                  * we have to draw one line every N dp. The width of the entire available area is divided by the N dp value.
@@ -309,18 +360,35 @@ fun UtilityBackground(
     }
 }
 
-//private fun measureBiggestLabelWidth(
-//    longestWord: String,
-//    textStyle: TextStyle,
-//    maxWidth: Dp,
-//    localDensity: Density
-//): Float {
-//    val paint = Paint().apply {
-//        textSize = textStyle.fontSize.value * localDensity.density
-//    }
-//    val paintMeasure = paint.measureText(longestWord)
-//
-//    return if (with(localDensity) { maxWidth.toPx() } > paintMeasure)
-//        paintMeasure
-//    else with(localDensity) { maxWidth.toPx() }
-//}
+private fun drawHorizontalLines(lines: List<HorizontalLine>, startOffset: Offset, drawScope: DrawScope) {
+//    drawScope.drawRect()
+}
+
+private fun getHorizontalLines(pattern: HorizontalLinesPattern, height: Float, density: Density): List<HorizontalLine> {
+    if (pattern is HorizontalLinesPattern.FixedSize) {
+        return pattern.lines
+    } else if (pattern is HorizontalLinesPattern.EveryDp) {
+        val defaultLine = pattern.lineDefault
+        val firstLine = pattern.firstLine
+        val lastLine = pattern.lastLine
+        val specialLines = pattern.lines
+
+        val linesCount = (height / (pattern.everyDp.value * density.density)).toInt()
+
+        val listOfHorizontalLines = mutableListOf<HorizontalLine>()
+
+        for (lineIndex in 0..linesCount) {
+            val line: HorizontalLine =
+                if (lineIndex == 0)
+                    firstLine
+                else if (lineIndex == linesCount)
+                    lastLine
+                else if (specialLines(lineIndex) != null)
+                    specialLines(lineIndex)!!
+                else defaultLine
+            listOfHorizontalLines.add(line)
+        }
+        return listOfHorizontalLines
+    }
+    return emptyList()
+}

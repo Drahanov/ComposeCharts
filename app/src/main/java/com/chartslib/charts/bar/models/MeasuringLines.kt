@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 /**
  * @param steps how many steps have this axis (x or y).
@@ -13,6 +14,9 @@ import androidx.compose.ui.unit.dp
  * @param brush lines style.
  * @param width line width
  */
+
+const val UNSPECIFIED_HEIGHT = Float.MIN_VALUE
+
 data class MeasuringLines(
     val shouldShow: Boolean = true,
     val brush: Brush = SolidColor(Color.LightGray),
@@ -24,14 +28,15 @@ data class UtilityLines(
     val horizontalLines: HorizontalLinesPattern,
     val verticalLines: VerticalLinesPattern,
 
-    val horizontalLabelsTextStyle: TextStyle = TextStyle(),
-    val verticalLabelsTextStyle: TextStyle = TextStyle(),
-
-    val horizontalLabelsMaxLines: Int = 1,
-    val verticalLabelsMaxLines: Int = 1,
-
     val horizontalLinesLabelAlignment: HorizontalLineAlignment = HorizontalLineAlignment.CENTERED,
-    val horizontalLabelsWidth: Dp = 10.dp
+    val yLabelsPreferences: LabelSizePreferences = LabelSizePreferences()
+)
+
+data class LabelSizePreferences (
+    val style: TextStyle = TextStyle(),
+    val maxLines: Int = 1,
+    val maxWidth: Dp = 30.dp,
+    val maxHeight: Dp = UNSPECIFIED_HEIGHT.dp
 )
 
 sealed class HorizontalLinesPattern {

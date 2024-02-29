@@ -1,11 +1,15 @@
 package com.chartslib
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -16,7 +20,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import com.chartslib.charts.bar.components.BarChart
 import com.chartslib.charts.bar.models.Axis
@@ -28,6 +37,7 @@ import com.chartslib.charts.bar.models.UtilityLines
 import com.chartslib.charts.bar.models.VerticalLine
 import com.chartslib.charts.bar.models.VerticalLinesPattern
 import com.chartslib.ui.theme.ChartsLibTheme
+import java.time.format.TextStyle
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,8 +88,9 @@ class MainActivity : ComponentActivity() {
                                 utilityLines = UtilityLines(
                                     horizontalLines = HorizontalLinesPattern.FixedSize(
                                         lines = listOf(
-                                            HorizontalLine(label = "Hello"),
-                                            HorizontalLine(),
+                                            HorizontalLine(label = "1"),
+                                            HorizontalLine(label = "3"),
+                                            HorizontalLine(label = "2asfasfsafdf"),
                                         )
                                     ),
                                     verticalLines = VerticalLinesPattern.FixedSize(
@@ -109,7 +120,10 @@ class MainActivity : ComponentActivity() {
                                     horizontalLines = HorizontalLinesPattern.EveryDp(
                                         everyDp = 25.dp,
                                         firstLine = HorizontalLine(lineWidth = 1.dp),
-                                        lastLine = HorizontalLine(lineWidth = 1.dp, lineBrush = SolidColor(Color.Red)),
+                                        lastLine = HorizontalLine(
+                                            lineWidth = 1.dp,
+                                            lineBrush = SolidColor(Color.Red)
+                                        ),
                                         lines = { index ->
                                             if (index == 0)
                                                 HorizontalLine()
@@ -120,7 +134,10 @@ class MainActivity : ComponentActivity() {
                                     verticalLines = VerticalLinesPattern.EveryDp(
                                         everyDp = 25.dp,
                                         firstLine = VerticalLine(lineWidth = 1.dp),
-                                        lastLine = VerticalLine(lineWidth = 1.dp, lineBrush = SolidColor(Color.Red)),
+                                        lastLine = VerticalLine(
+                                            lineWidth = 1.dp,
+                                            lineBrush = SolidColor(Color.Red)
+                                        ),
                                         lines = { index ->
                                             if (index == 0)
                                                 VerticalLine()
@@ -131,6 +148,28 @@ class MainActivity : ComponentActivity() {
                                 )
                             )
                         )
+
+                        Box(modifier = Modifier
+                            .background(Color.Magenta)
+                            .padding(10.dp)
+                            .height(200.dp)
+                            .fillMaxWidth()) {
+                            val textMeasurer = rememberTextMeasurer()
+
+                            val textStyle = androidx.compose.ui.text.TextStyle()
+                            val measuredText = textMeasurer.measure(
+                                AnnotatedString("A"),
+                                overflow = TextOverflow.Ellipsis,
+                                style = textStyle.copy(background = Color.White),
+                                constraints = Constraints(maxWidth = 100)
+                            )
+
+                            Log.d("Hello World", measuredText.size.height.toString())
+                            Log.d("Hello World", measuredText.size.width.toString())
+                            Canvas(modifier = Modifier.fillMaxSize()) {
+                                drawText(measuredText)
+                            }
+                        }
                     }
                 }
             }
