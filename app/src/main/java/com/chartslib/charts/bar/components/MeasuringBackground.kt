@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.Dp
 import com.chartslib.charts.bar.models.HorizontalLine
 import com.chartslib.charts.bar.models.HorizontalLineAlignment
 import com.chartslib.charts.bar.models.HorizontalLinesPattern
+import com.chartslib.charts.bar.models.LabelSizePreferences
 import com.chartslib.charts.bar.models.MeasuringLines
 import com.chartslib.charts.bar.models.UtilityLines
 import com.chartslib.charts.bar.models.VerticalLine
@@ -165,11 +167,23 @@ fun UtilityBackground(
 //                HorizontalLineAlignment.ABOVE_LINE -> utilityLines.verticalSpaceForText.toPx()
 //                else -> 0f
 //            }
-
+            val measuredYLabels = measureLabels(
+                this,
+                utilityLines.horizontalLines,
+                textMeasurer,
+                utilityLines.yLabelsPreferences
+            )
+            val horizontalLines = getHorizontalLines(utilityLines.horizontalLines, height, density)
             val width = size.width
             val height = size.height
 
-            val horizontalLines = getHorizontalLines(utilityLines.horizontalLines, height, density)
+            drawHorizontalLines(
+                lines = horizontalLines,
+                startOffset = Offset(0f, 0f),
+                drawScope = this,
+                width = width,
+                height = height
+            )
 
             /**
              * Draw horizontal lines.
@@ -212,10 +226,9 @@ fun UtilityBackground(
                 drawText(
                     measuredTexts[2]!!,
                     topLeft = Offset(0f, 0f),
-                    )
+                )
                 for (line in lines) {
                     val lineWidthPx = with(density) { line.lineWidth.toPx() }
-
                     drawRect(
                         topLeft = Offset(
                             labelWidth,
@@ -235,8 +248,7 @@ fun UtilityBackground(
 //                    drawText(measuredText, topLeft = Offset(0f, textPosition))
                     horizontalLineYStart += step
                 }
-            }
-            else if (utilityLines.horizontalLines is HorizontalLinesPattern.EveryDp) {
+            } else if (utilityLines.horizontalLines is HorizontalLinesPattern.EveryDp) {
                 /**
                  * If [utilityLines.horizontalLines] lines is instance of [HorizontalLinesPattern.EveryDp]
                  * we have to draw one line every N dp. The width of the entire available area is divided by the N dp value.
@@ -310,8 +322,7 @@ fun UtilityBackground(
                     )
                     verticalLineXStart += (width - linesWidthSum) / (lines.size - 1) + line.lineWidth.toPx()
                 }
-            }
-            else if (utilityLines.verticalLines is VerticalLinesPattern.EveryDp) {
+            } else if (utilityLines.verticalLines is VerticalLinesPattern.EveryDp) {
                 /**
                  * If [utilityLines.verticalLines] lines is instance of [VerticalLinesPattern.EveryDp]
                  * we have to draw one line every N dp. The width of the entire available area is divided by the N dp value.
@@ -360,11 +371,37 @@ fun UtilityBackground(
     }
 }
 
-private fun drawHorizontalLines(lines: List<HorizontalLine>, startOffset: Offset, drawScope: DrawScope) {
-//    drawScope.drawRect()
+private fun drawHorizontalLines(
+    lines: List<HorizontalLine>,
+    startOffset: Offset,
+    drawScope: DrawScope,
+    width: Float,
+    height: Float,
+) {
+    drawScope.run {
+        var horizontalLineYStart = startOffset.y
+        val sumOfLinesThickness = getSumOfLinesThickness(drawScope, lines.map { it.lineWidth })
+        for (line in lines) {
+            drawScope.drawRect(
+                topLeft = Offset(
+                    line.lineWidth.toPx(),
+                    horizontalLineYStart
+                ),
+                brush = line.lineBrush,
+                size = Size(height = line.lineWidth.toPx(), width = width)
+            )
+
+            val step = (height - sumOfLinesThickness) / (lines.size - 1) + line.lineWidth.toPx()
+            horizontalLineYStart += step
+        }
+    }
 }
 
-private fun getHorizontalLines(pattern: HorizontalLinesPattern, height: Float, density: Density): List<HorizontalLine> {
+private fun getHorizontalLines(
+    pattern: HorizontalLinesPattern,
+    height: Float,
+    density: Density
+): List<HorizontalLine> {
     if (pattern is HorizontalLinesPattern.FixedSize) {
         return pattern.lines
     } else if (pattern is HorizontalLinesPattern.EveryDp) {
@@ -391,4 +428,39 @@ private fun getHorizontalLines(pattern: HorizontalLinesPattern, height: Float, d
         return listOfHorizontalLines
     }
     return emptyList()
+}
+
+private fun getSumOfLinesThickness(drawScope: DrawScope, values: List<Dp>): Float {
+    var result = 0f
+    drawScope.run {
+        for (value in values) {
+            result += value.toPx()
+        }
+    }
+    return result
+}
+
+private fun measureLabels(
+    drawScope: DrawScope,
+    lines: List<HorizontalLine>,
+    textMeasurer: TextMeasurer,
+    labelPrefs: LabelSizePreferences
+): HashMap<Int, TextLayoutResult> {
+    val measuredTexts = HashMap<Int, TextLayoutResult>()
+    drawScope.run {
+        for (line in lines) {
+            val measuredText =
+                textMeasurer.measure(
+                    text = AnnotatedString(line.label),
+                    style = labelPrefs.style,
+                    maxLines = labelPrefs.maxLines,
+                    constraints = Constraints(
+                        maxWidth = labelPrefs.maxWidth.toPx().toInt()
+                    ),
+                    overflow = TextOverflow.Ellipsis,
+                )
+            measuredTexts[measuredTexts.size] = measuredText
+        }
+    }
+    return measuredTexts
 }
