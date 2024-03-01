@@ -14,17 +14,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import com.chartslib.charts.bar.components.BarChart
@@ -32,12 +28,11 @@ import com.chartslib.charts.bar.models.Axis
 import com.chartslib.charts.bar.models.BarChartConfiguration
 import com.chartslib.charts.bar.models.BarColumnModel
 import com.chartslib.charts.bar.models.HorizontalLine
-import com.chartslib.charts.bar.models.HorizontalLinesPattern
+import com.chartslib.charts.bar.models.HorizontalLineAlignment
 import com.chartslib.charts.bar.models.UtilityLines
 import com.chartslib.charts.bar.models.VerticalLine
-import com.chartslib.charts.bar.models.VerticalLinesPattern
+import com.chartslib.charts.bar.models.VerticalLineAlignment
 import com.chartslib.ui.theme.ChartsLibTheme
-import java.time.format.TextStyle
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,74 +81,64 @@ class MainActivity : ComponentActivity() {
                                     maxValue = listOfData.size.toFloat()
                                 ),
                                 utilityLines = UtilityLines(
-                                    horizontalLines = HorizontalLinesPattern.FixedSize(
-                                        lines = listOf(
-                                            HorizontalLine(label = "1"),
-                                            HorizontalLine(label = "3"),
-                                            HorizontalLine(label = "2asfasfsafdf"),
-                                        )
+                                    horizontalLines = listOf(
+                                        HorizontalLine(label = "", alignment = HorizontalLineAlignment.UNDER_LINE),
+                                        HorizontalLine(label = "4", alignment = HorizontalLineAlignment.CENTERED, isLineVisible = false),
+                                        HorizontalLine(label = "", alignment = HorizontalLineAlignment.CENTERED),
+                                        HorizontalLine(label = "4", alignment = HorizontalLineAlignment.CENTERED, isLineVisible = false),
+                                        HorizontalLine(label = "", alignment = HorizontalLineAlignment.CENTERED),
+                                        HorizontalLine(label = "4", alignment = HorizontalLineAlignment.CENTERED, isLineVisible = false),
+                                        HorizontalLine(label = "", alignment = HorizontalLineAlignment.CENTERED),
+                                        HorizontalLine(label = "4", alignment = HorizontalLineAlignment.CENTERED, isLineVisible = false),
+                                        HorizontalLine(label = "", alignment = HorizontalLineAlignment.CENTERED),
+                                        HorizontalLine(label = "4", alignment = HorizontalLineAlignment.CENTERED, isLineVisible = false),
+                                        HorizontalLine(label = "", alignment = HorizontalLineAlignment.CENTERED),
+                                        HorizontalLine(label = "4", alignment = HorizontalLineAlignment.CENTERED, isLineVisible = false),
+                                        HorizontalLine(label = "", alignment = HorizontalLineAlignment.UNDER_LINE),
                                     ),
-                                    verticalLines = VerticalLinesPattern.FixedSize(
-                                        lines = listOf(
-                                            VerticalLine(lineWidth = 1.dp),
-                                            VerticalLine()
-                                        )
+                                    verticalLines = listOf(
+                                        VerticalLine(lineWidth = 1.dp, alignment = VerticalLineAlignment.BEFORE_LINE, label = "asфівафіафіваdf"),
+                                        VerticalLine(lineWidth = 1.dp, alignment = VerticalLineAlignment.CENTERED, label = "asфівафіафіваdf"),
+                                        VerticalLine(lineWidth = 1.dp, alignment = VerticalLineAlignment.CENTERED, label = "sadf"),
                                     )
                                 )
                             )
                         )
 
-                        BarChart(
-                            chartConfiguration = BarChartConfiguration(
-                                modifier = Modifier
-                                    .background(Color.White)
-                                    .padding(10.dp)
-                                    .height(200.dp),
-                                columns = listOfData,
-                                paddingBetweenColumns = 0.3f,
-                                axisX = Axis(
-                                    steps = listOfData.size,
-                                    label = { month[it] },
-                                    maxValue = listOfData.size.toFloat()
-                                ),
-                                utilityLines = UtilityLines(
-                                    horizontalLines = HorizontalLinesPattern.EveryDp(
-                                        everyDp = 25.dp,
-                                        firstLine = HorizontalLine(lineWidth = 1.dp),
-                                        lastLine = HorizontalLine(
-                                            lineWidth = 1.dp,
-                                            lineBrush = SolidColor(Color.Red)
-                                        ),
-                                        lines = { index ->
-                                            if (index == 0)
-                                                HorizontalLine()
-                                            else
-                                                HorizontalLine()
-                                        }
-                                    ),
-                                    verticalLines = VerticalLinesPattern.EveryDp(
-                                        everyDp = 25.dp,
-                                        firstLine = VerticalLine(lineWidth = 1.dp),
-                                        lastLine = VerticalLine(
-                                            lineWidth = 1.dp,
-                                            lineBrush = SolidColor(Color.Red)
-                                        ),
-                                        lines = { index ->
-                                            if (index == 0)
-                                                VerticalLine()
-                                            else
-                                                VerticalLine()
-                                        }
-                                    )
-                                )
-                            )
-                        )
+//                        BarChart(
+//                            chartConfiguration = BarChartConfiguration(
+//                                modifier = Modifier
+//                                    .background(Color.White)
+//                                    .padding(10.dp)
+//                                    .height(200.dp),
+//                                columns = listOfData,
+//                                paddingBetweenColumns = 0.3f,
+//                                axisX = Axis(
+//                                    steps = listOfData.size,
+//                                    label = { month[it] },
+//                                    maxValue = listOfData.size.toFloat()
+//                                ),
+//                                utilityLines = UtilityLines(
+//                                    horizontalLines = listOf(
+//                                        HorizontalLine(label = "1"),
+//                                        HorizontalLine(label = "3"),
+//                                        HorizontalLine(label = "1"),
+//                                    ),
+//                                    verticalLines = listOf(
+//                                        VerticalLine(lineWidth = 1.dp),
+//                                        VerticalLine()
+//                                    )
+//                                )
+//                            )
+//                        )
 
-                        Box(modifier = Modifier
-                            .background(Color.Magenta)
-                            .padding(10.dp)
-                            .height(200.dp)
-                            .fillMaxWidth()) {
+                        Box(
+                            modifier = Modifier
+                                .background(Color.Magenta)
+                                .padding(10.dp)
+                                .height(200.dp)
+                                .fillMaxWidth()
+                        ) {
                             val textMeasurer = rememberTextMeasurer()
 
                             val textStyle = androidx.compose.ui.text.TextStyle()

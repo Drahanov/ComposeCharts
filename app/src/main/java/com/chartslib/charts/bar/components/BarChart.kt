@@ -146,14 +146,14 @@ fun BarChart(
             val heightPerValue = (height) / chartConfiguration.axisY.maxValue
             translate(left = position.value) {
                 for (column in chartConfiguration.columns) {
-                    drawRoundRect(
-                        topLeft = Offset(start, height - (column.value * heightPerValue)),
-                        size = Size(
-                            perColumn - spaceBetween, column.value * heightPerValue - textHeight
-                        ),
-                        color = column.color,
-                        cornerRadius = CornerRadius(5f),
-                    )
+//                    drawRoundRect(
+//                        topLeft = Offset(start, height - (column.value * heightPerValue)),
+//                        size = Size(
+//                            perColumn - spaceBetween, column.value * heightPerValue - textHeight
+//                        ),
+//                        color = column.color,
+//                        cornerRadius = CornerRadius(5f),
+//                    )
 //
 //                    val text =
 //                        chartConfiguration.axisX.label(chartConfiguration.columns.indexOf(column))
