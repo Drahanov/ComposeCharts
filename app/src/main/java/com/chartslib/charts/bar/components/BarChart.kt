@@ -78,9 +78,9 @@ fun BarChart(
 //            columnWidth = columnWidth.value
 //        )
 
-        UtilityBackground(
-            utilityLines = chartConfiguration.utilityLines
-        )
+//        UtilityBackground(
+//            utilityLines = chartConfiguration.utilityLines
+//        )
         Canvas(
             modifier = Modifier
                 .fillMaxSize()

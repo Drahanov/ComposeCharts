@@ -27,11 +27,13 @@ import com.chartslib.charts.bar.components.BarChart
 import com.chartslib.charts.bar.models.Axis
 import com.chartslib.charts.bar.models.BarChartConfiguration
 import com.chartslib.charts.bar.models.BarColumnModel
-import com.chartslib.charts.bar.models.HorizontalLine
-import com.chartslib.charts.bar.models.HorizontalLineAlignment
-import com.chartslib.charts.bar.models.UtilityLines
-import com.chartslib.charts.bar.models.VerticalLine
-import com.chartslib.charts.bar.models.VerticalLineAlignment
+import com.chartslib.charts.cartesian.components.CartesianSystem
+import com.chartslib.charts.cartesian.components.CartesianSystemPreferences
+import com.chartslib.charts.cartesian.components.HorizontalLine
+import com.chartslib.charts.cartesian.components.HorizontalLineAlignment
+import com.chartslib.charts.cartesian.components.Padding
+import com.chartslib.charts.cartesian.components.VerticalLine
+import com.chartslib.charts.cartesian.components.VerticalLineAlignment
 import com.chartslib.ui.theme.ChartsLibTheme
 
 class MainActivity : ComponentActivity() {
@@ -67,42 +69,149 @@ class MainActivity : ComponentActivity() {
                     )
 
                     Column {
-                        BarChart(
-                            chartConfiguration = BarChartConfiguration(
-                                modifier = Modifier
-                                    .background(Color.White)
-                                    .padding(10.dp)
-                                    .height(200.dp),
-                                columns = listOfData,
-                                paddingBetweenColumns = 0.3f,
-                                axisX = Axis(
-                                    steps = listOfData.size,
-                                    label = { month[it] },
-                                    maxValue = listOfData.size.toFloat()
-                                ),
-                                utilityLines = UtilityLines(
-                                    horizontalLines = listOf(
-                                        HorizontalLine(label = "", alignment = HorizontalLineAlignment.UNDER_LINE),
-                                        HorizontalLine(label = "4", alignment = HorizontalLineAlignment.CENTERED, isLineVisible = false),
-                                        HorizontalLine(label = "", alignment = HorizontalLineAlignment.CENTERED),
-                                        HorizontalLine(label = "4", alignment = HorizontalLineAlignment.CENTERED, isLineVisible = false),
-                                        HorizontalLine(label = "", alignment = HorizontalLineAlignment.CENTERED),
-                                        HorizontalLine(label = "4", alignment = HorizontalLineAlignment.CENTERED, isLineVisible = false),
-                                        HorizontalLine(label = "", alignment = HorizontalLineAlignment.CENTERED),
-                                        HorizontalLine(label = "4", alignment = HorizontalLineAlignment.CENTERED, isLineVisible = false),
-                                        HorizontalLine(label = "", alignment = HorizontalLineAlignment.CENTERED),
-                                        HorizontalLine(label = "4", alignment = HorizontalLineAlignment.CENTERED, isLineVisible = false),
-                                        HorizontalLine(label = "", alignment = HorizontalLineAlignment.CENTERED),
-                                        HorizontalLine(label = "4", alignment = HorizontalLineAlignment.CENTERED, isLineVisible = false),
-                                        HorizontalLine(label = "", alignment = HorizontalLineAlignment.UNDER_LINE),
+//                        BarChart(
+//                            chartConfiguration = BarChartConfiguration(
+//                                modifier = Modifier
+//                                    .background(Color.White)
+//                                    .padding(10.dp)
+//                                    .height(200.dp),
+//                                columns = listOfData,
+//                                paddingBetweenColumns = 0.3f,
+//                                axisX = Axis(
+//                                    steps = listOfData.size,
+//                                    label = { month[it] },
+//                                    maxValue = listOfData.size.toFloat()
+//                                ),
+//
+//                            )
+//                        )
+                        CartesianSystem(
+                            cartesianSysPrefs = CartesianSystemPreferences(
+                                horizontalLines = listOf(
+                                    HorizontalLine(
+                                        label = "",
+                                        alignment = HorizontalLineAlignment.UNDER_LINE
                                     ),
-                                    verticalLines = listOf(
-                                        VerticalLine(lineWidth = 1.dp, alignment = VerticalLineAlignment.BEFORE_LINE, label = "asфівафіафіваdf"),
-                                        VerticalLine(lineWidth = 1.dp, alignment = VerticalLineAlignment.CENTERED, label = "asфівафіафіваdf"),
-                                        VerticalLine(lineWidth = 1.dp, alignment = VerticalLineAlignment.CENTERED, label = "sadf"),
-                                    )
+
+                                    HorizontalLine(
+                                        label = "4",
+                                        alignment = HorizontalLineAlignment.CENTERED,
+                                        isLineVisible = false
+                                    ),
+                                    HorizontalLine(
+                                        label = "",
+                                        alignment = HorizontalLineAlignment.UNDER_LINE
+                                    ),
+
+                                    HorizontalLine(
+                                        label = "4",
+                                        alignment = HorizontalLineAlignment.CENTERED,
+                                        isLineVisible = false
+                                    ),
+                                    HorizontalLine(
+                                        label = "",
+                                        alignment = HorizontalLineAlignment.UNDER_LINE
+                                    ),
+
+                                    HorizontalLine(
+                                        label = "4",
+                                        alignment = HorizontalLineAlignment.CENTERED,
+                                        isLineVisible = false
+                                    ),
+                                    HorizontalLine(
+                                        label = "",
+                                        alignment = HorizontalLineAlignment.UNDER_LINE
+                                    ),
+
+                                    HorizontalLine(
+                                        label = "4",
+                                        alignment = HorizontalLineAlignment.CENTERED,
+                                        isLineVisible = false
+                                    ),
+                                    HorizontalLine(
+                                        label = "",
+                                        alignment = HorizontalLineAlignment.UNDER_LINE
+                                    ),
+
+                                    HorizontalLine(
+                                        label = "4",
+                                        alignment = HorizontalLineAlignment.CENTERED,
+                                        isLineVisible = false
+                                    ),
+                                    HorizontalLine(
+                                        label = "",
+                                        alignment = HorizontalLineAlignment.CENTERED
+                                    ),
+                                    HorizontalLine(
+                                        label = "4",
+                                        alignment = HorizontalLineAlignment.CENTERED,
+                                        isLineVisible = false
+                                    ),
+                                    HorizontalLine(
+                                        label = "",
+                                        alignment = HorizontalLineAlignment.CENTERED
+                                    ),
+                                    HorizontalLine(
+                                        label = "4",
+                                        alignment = HorizontalLineAlignment.CENTERED,
+                                        isLineVisible = false
+                                    ),
+                                    HorizontalLine(
+                                        label = "",
+                                        alignment = HorizontalLineAlignment.CENTERED
+                                    ),
+                                    HorizontalLine(
+                                        label = "4",
+                                        alignment = HorizontalLineAlignment.CENTERED,
+                                        isLineVisible = false
+                                    ),
+                                    HorizontalLine(
+                                        label = "",
+                                        alignment = HorizontalLineAlignment.CENTERED
+                                    ),
+                                    HorizontalLine(
+                                        label = "4",
+                                        alignment = HorizontalLineAlignment.CENTERED,
+                                        isLineVisible = false
+                                    ),
+                                    HorizontalLine(
+                                        label = "",
+                                        alignment = HorizontalLineAlignment.CENTERED
+                                    ),
+                                    HorizontalLine(
+                                        label = "4",
+                                        alignment = HorizontalLineAlignment.CENTERED,
+                                        isLineVisible = false
+                                    ),
+                                    HorizontalLine(
+                                        label = "",
+                                        alignment = HorizontalLineAlignment.UNDER_LINE
+                                    ),
+                                ),
+                                horizontalExtraPadding = Padding(top = 10.dp, bottom = 10.dp),
+                                verticalExtraPadding = Padding(start = 10.dp, end = 10.dp),
+                                verticalLines = listOf(
+                                    VerticalLine(
+                                        lineWidth = 1.dp,
+                                        alignment = VerticalLineAlignment.AFTER_LINE,
+                                        label = "1"
+                                    ),
+                                    VerticalLine(
+                                        lineWidth = 1.dp,
+                                        alignment = VerticalLineAlignment.CENTERED,
+                                        label = "2"
+                                    ),
+                                    VerticalLine(
+                                        lineWidth = 1.dp,
+                                        alignment = VerticalLineAlignment.BEFORE_LINE,
+                                        label = "3"
+                                    ),
                                 )
-                            )
+                            ),
+                            modifier = Modifier
+                                .background(Color.White)
+                                .padding(10.dp)
+                                .height(200.dp)
                         )
 
 //                        BarChart(
