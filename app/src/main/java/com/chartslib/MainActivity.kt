@@ -23,9 +23,6 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
-import com.chartslib.charts.bar.components.BarChart
-import com.chartslib.charts.bar.models.Axis
-import com.chartslib.charts.bar.models.BarChartConfiguration
 import com.chartslib.charts.bar.models.BarColumnModel
 import com.chartslib.charts.cartesian.components.CartesianSystem
 import com.chartslib.charts.cartesian.components.CartesianSystemPreferences
@@ -90,120 +87,120 @@ class MainActivity : ComponentActivity() {
                                 horizontalLines = listOf(
                                     HorizontalLine(
                                         label = "",
-                                        alignment = HorizontalLineAlignment.UNDER_LINE
+                                        labelAlignment = HorizontalLineAlignment.UNDER_LINE
                                     ),
 
                                     HorizontalLine(
                                         label = "4",
-                                        alignment = HorizontalLineAlignment.CENTERED,
+                                        labelAlignment = HorizontalLineAlignment.CENTERED,
                                         isLineVisible = false
                                     ),
                                     HorizontalLine(
                                         label = "",
-                                        alignment = HorizontalLineAlignment.UNDER_LINE
+                                        labelAlignment = HorizontalLineAlignment.UNDER_LINE
                                     ),
 
                                     HorizontalLine(
                                         label = "4",
-                                        alignment = HorizontalLineAlignment.CENTERED,
+                                        labelAlignment = HorizontalLineAlignment.CENTERED,
                                         isLineVisible = false
                                     ),
                                     HorizontalLine(
                                         label = "",
-                                        alignment = HorizontalLineAlignment.UNDER_LINE
+                                        labelAlignment = HorizontalLineAlignment.UNDER_LINE
                                     ),
 
                                     HorizontalLine(
                                         label = "4",
-                                        alignment = HorizontalLineAlignment.CENTERED,
+                                        labelAlignment = HorizontalLineAlignment.CENTERED,
                                         isLineVisible = false
                                     ),
                                     HorizontalLine(
                                         label = "",
-                                        alignment = HorizontalLineAlignment.UNDER_LINE
+                                        labelAlignment = HorizontalLineAlignment.UNDER_LINE
                                     ),
 
                                     HorizontalLine(
                                         label = "4",
-                                        alignment = HorizontalLineAlignment.CENTERED,
+                                        labelAlignment = HorizontalLineAlignment.CENTERED,
                                         isLineVisible = false
                                     ),
                                     HorizontalLine(
                                         label = "",
-                                        alignment = HorizontalLineAlignment.UNDER_LINE
+                                        labelAlignment = HorizontalLineAlignment.UNDER_LINE
                                     ),
 
                                     HorizontalLine(
                                         label = "4",
-                                        alignment = HorizontalLineAlignment.CENTERED,
+                                        labelAlignment = HorizontalLineAlignment.CENTERED,
                                         isLineVisible = false
                                     ),
                                     HorizontalLine(
                                         label = "",
-                                        alignment = HorizontalLineAlignment.CENTERED
+                                        labelAlignment = HorizontalLineAlignment.CENTERED
                                     ),
                                     HorizontalLine(
                                         label = "4",
-                                        alignment = HorizontalLineAlignment.CENTERED,
+                                        labelAlignment = HorizontalLineAlignment.CENTERED,
                                         isLineVisible = false
                                     ),
                                     HorizontalLine(
                                         label = "",
-                                        alignment = HorizontalLineAlignment.CENTERED
+                                        labelAlignment = HorizontalLineAlignment.CENTERED
                                     ),
                                     HorizontalLine(
                                         label = "4",
-                                        alignment = HorizontalLineAlignment.CENTERED,
+                                        labelAlignment = HorizontalLineAlignment.CENTERED,
                                         isLineVisible = false
                                     ),
                                     HorizontalLine(
                                         label = "",
-                                        alignment = HorizontalLineAlignment.CENTERED
+                                        labelAlignment = HorizontalLineAlignment.CENTERED
                                     ),
                                     HorizontalLine(
                                         label = "4",
-                                        alignment = HorizontalLineAlignment.CENTERED,
+                                        labelAlignment = HorizontalLineAlignment.CENTERED,
                                         isLineVisible = false
                                     ),
                                     HorizontalLine(
                                         label = "",
-                                        alignment = HorizontalLineAlignment.CENTERED
+                                        labelAlignment = HorizontalLineAlignment.CENTERED
                                     ),
                                     HorizontalLine(
                                         label = "4",
-                                        alignment = HorizontalLineAlignment.CENTERED,
+                                        labelAlignment = HorizontalLineAlignment.CENTERED,
                                         isLineVisible = false
                                     ),
                                     HorizontalLine(
                                         label = "",
-                                        alignment = HorizontalLineAlignment.CENTERED
+                                        labelAlignment = HorizontalLineAlignment.CENTERED
                                     ),
                                     HorizontalLine(
                                         label = "4",
-                                        alignment = HorizontalLineAlignment.CENTERED,
+                                        labelAlignment = HorizontalLineAlignment.CENTERED,
                                         isLineVisible = false
                                     ),
                                     HorizontalLine(
                                         label = "",
-                                        alignment = HorizontalLineAlignment.UNDER_LINE
+                                        labelAlignment = HorizontalLineAlignment.UNDER_LINE
                                     ),
                                 ),
                                 horizontalExtraPadding = Padding(top = 10.dp, bottom = 10.dp),
                                 verticalExtraPadding = Padding(start = 10.dp, end = 10.dp),
                                 verticalLines = listOf(
                                     VerticalLine(
-                                        lineWidth = 1.dp,
-                                        alignment = VerticalLineAlignment.AFTER_LINE,
+                                        lineThickness = 1.dp,
+                                        labelAlignment = VerticalLineAlignment.AFTER_LINE,
                                         label = "1"
                                     ),
                                     VerticalLine(
-                                        lineWidth = 1.dp,
-                                        alignment = VerticalLineAlignment.CENTERED,
+                                        lineThickness = 1.dp,
+                                        labelAlignment = VerticalLineAlignment.CENTERED,
                                         label = "2"
                                     ),
                                     VerticalLine(
-                                        lineWidth = 1.dp,
-                                        alignment = VerticalLineAlignment.BEFORE_LINE,
+                                        lineThickness = 1.dp,
+                                        labelAlignment = VerticalLineAlignment.BEFORE_LINE,
                                         label = "3"
                                     ),
                                 )

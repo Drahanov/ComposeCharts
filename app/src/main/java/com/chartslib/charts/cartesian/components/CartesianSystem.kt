@@ -1,6 +1,5 @@
 package com.chartslib.charts.cartesian.components
 
-import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
@@ -21,6 +19,14 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlin.math.floor
 
+/**
+ * The CartesianSystem function is responsible for creating a coordinate system
+ * with horizontal and vertical lines, as well as applying labels to these lines.
+ *
+ * @param [modifier] compose modifier.
+ * @param [cartesianSysPrefs] an object that contains all the settings for
+ * constructing the coordinate system (eg, line sizes, label style, etc.).
+ */
 @Composable
 fun CartesianSystem(
     modifier: Modifier,
@@ -50,16 +56,18 @@ fun CartesianSystem(
 
             /**
              * Here we measure the width of the labels located on the vertical y.
-             * We also check whether it is there first element of vertical x with parameter [VerticalLineAlignment.CENTERED] or [VerticalLineAlignment.BEFORE_LINE]
-             * and if it width is greater than the width of the labels of vertical y, then this will be the space on the left
+             * Biggest width will be start space for vertical labels.
+             * We also check whether it is there first element of horizontal axis with parameter [VerticalLineAlignment.CENTERED] or [VerticalLineAlignment.BEFORE_LINE]
+             * and if this number is greater than the largest vertically, then this will be the start space,
+             * cos it will extend to the left by its full length if it is [VerticalLineAlignment.BEFORE_LINE] and by half if it is [VerticalLineAlignment.CENTERED].
              */
             var startExtraLabelSpace =
                 measuredVerticalLabels.maxBy { it.value.size.width }.value.size.width
-            if (verticalLines[0].alignment == VerticalLineAlignment.CENTERED) {
+            if (verticalLines[0].labelAlignment == VerticalLineAlignment.CENTERED) {
                 if (measuredHorizontalLabels[0]!!.size.width / 2 > startExtraLabelSpace) {
                     startExtraLabelSpace = measuredHorizontalLabels[0]!!.size.width / 2
                 }
-            } else if (verticalLines[0].alignment == VerticalLineAlignment.BEFORE_LINE) {
+            } else if (verticalLines[0].labelAlignment == VerticalLineAlignment.BEFORE_LINE) {
                 if (measuredHorizontalLabels[0]!!.size.width / 2 > startExtraLabelSpace) {
                     startExtraLabelSpace = measuredHorizontalLabels[0]!!.size.width
                 }
@@ -67,7 +75,7 @@ fun CartesianSystem(
 
 
             val topExtraLabelSpace =
-                when (horizontalLines.first().alignment) {
+                when (horizontalLines.first().labelAlignment) {
                     HorizontalLineAlignment.ABOVE_LINE -> {
                         measuredVerticalLabels[0]!!.size.height.toFloat()
                     }
@@ -82,7 +90,7 @@ fun CartesianSystem(
                 }
 
             var bottomExtraLabelSpace =
-                when (horizontalLines.last().alignment) {
+                when (horizontalLines.last().labelAlignment) {
                     HorizontalLineAlignment.UNDER_LINE -> {
                         measuredVerticalLabels[measuredVerticalLabels.size - 1]!!.size.height.toFloat()
                     }
@@ -102,9 +110,9 @@ fun CartesianSystem(
             }
 
             val endExtraLabels =
-                if (verticalLines.last().alignment == VerticalLineAlignment.CENTERED) {
+                if (verticalLines.last().labelAlignment == VerticalLineAlignment.CENTERED) {
                     measuredHorizontalLabels[measuredHorizontalLabels.size - 1]!!.size.width / 2
-                } else if (verticalLines.last().alignment == VerticalLineAlignment.AFTER_LINE) {
+                } else if (verticalLines.last().labelAlignment == VerticalLineAlignment.AFTER_LINE) {
                     measuredHorizontalLabels[measuredHorizontalLabels.size - 1]!!.size.width
                 } else {
                     0
@@ -192,7 +200,7 @@ private fun drawHorizontalLines(
     extraPadding: Padding
 ) {
     drawScope.run {
-        val sumOfLinesThickness = getSumOfLinesThickness(drawScope, lines.map { it.lineWidth })
+        val sumOfLinesThickness = getSumOfLinesThickness(drawScope, lines.map { it.lineThickness })
 
         var horizontalLineYStart = startOffset.y + extraPadding.top.toPx()
         val lineWidth = width - extraPadding.start.toPx() - extraPadding.end.toPx()
@@ -208,7 +216,7 @@ private fun drawHorizontalLines(
                         ),
                         brush = line.lineBrush,
                         size = Size(
-                            height = line.lineWidth.toPx(),
+                            height = line.lineThickness.toPx(),
                             width = lineWidth
                         )
                     )
@@ -229,7 +237,7 @@ private fun drawHorizontalLines(
                             ),
                             brush = line.lineBrush,
                             size = Size(
-                                height = line.lineWidth.toPx(),
+                                height = line.lineThickness.toPx(),
                                 width = if (countOfDashes == 1) lineWidth else dashLength
                             )
                         )
@@ -240,7 +248,7 @@ private fun drawHorizontalLines(
             }
 
             val labelY =
-                when (line.alignment) {
+                when (line.labelAlignment) {
                     HorizontalLineAlignment.ABOVE_LINE -> {
                         measuredTexts[lines.indexOf(line)]!!.size.height
                     }
@@ -263,7 +271,7 @@ private fun drawHorizontalLines(
             )
 
             val step =
-                (height - sumOfLinesThickness - extraPadding.top.toPx() - extraPadding.bottom.toPx()) / (lines.size - 1) + line.lineWidth.toPx()
+                (height - sumOfLinesThickness - extraPadding.top.toPx() - extraPadding.bottom.toPx()) / (lines.size - 1) + line.lineThickness.toPx()
             horizontalLineYStart += step
         }
     }
@@ -288,18 +296,17 @@ private fun drawVerticalLines(
         val lineY = startOffset.y + extraPadding.top.toPx()
         val lineHeight = height - extraPadding.top.toPx() - extraPadding.bottom.toPx()
 
-        val sumOfLinesThickness = getSumOfLinesThickness(drawScope, lines.map { it.lineWidth })
+        val sumOfLinesThickness = getSumOfLinesThickness(drawScope, lines.map { it.lineThickness })
         for (line in lines) {
             if (line.lineStyle is LineStyle.StrokeLine)
                 drawRect(
                     topLeft = Offset(verticalLineXStart, lineY),
                     brush = line.lineBrush,
                     size = Size(
-                        line.lineWidth.toPx(),
+                        line.lineThickness.toPx(),
                         lineHeight
                     )
                 )
-
             else if (line.lineStyle is LineStyle.DashedLine) {
                 val dashLength = line.lineStyle.dashLength.toPx()
                 val spaceLength = line.lineStyle.spaceLength.toPx()
@@ -318,7 +325,7 @@ private fun drawVerticalLines(
                         brush = line.lineBrush,
                         size = Size(
                             height = if (countOfDashes == 1) lineHeight else dashLength,
-                            width = line.lineWidth.toPx()
+                            width = line.lineThickness.toPx()
                         )
                     )
 
@@ -327,7 +334,7 @@ private fun drawVerticalLines(
             }
 
             val labelX =
-                when (line.alignment) {
+                when (line.labelAlignment) {
                     VerticalLineAlignment.BEFORE_LINE -> {
                         measuredTexts[lines.indexOf(line)]!!.size.width
                     }
@@ -346,7 +353,7 @@ private fun drawVerticalLines(
                 topLeft = Offset(verticalLineXStart - labelX, height + labelPadding)
             )
 
-            verticalLineXStart += (width - sumOfLinesThickness - extraPadding.start.toPx() - extraPadding.end.toPx()) / (lines.size - 1) + line.lineWidth.toPx()
+            verticalLineXStart += (width - sumOfLinesThickness - extraPadding.start.toPx() - extraPadding.end.toPx()) / (lines.size - 1) + line.lineThickness.toPx()
         }
     }
 }
