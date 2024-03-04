@@ -1,8 +1,11 @@
 package com.chartslib.charts.bar.models
 
 import androidx.compose.ui.graphics.Color
+import com.chartslib.charts.cartesian.components.HorizontalLine
+import com.chartslib.charts.cartesian.components.VerticalLine
 import com.chartslib.ui.theme.Azure
 import java.io.Serializable
+import java.util.Collections
 import java.util.UUID
 
 /**

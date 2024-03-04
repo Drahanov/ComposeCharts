@@ -4,10 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -15,13 +18,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.chartslib.charts.bar.components.BarChart
 import com.chartslib.charts.bar.models.Axis
 import com.chartslib.charts.bar.models.BarChartConfiguration
 import com.chartslib.charts.bar.models.BarColumnModel
+import com.chartslib.charts.cartesian.components.CartesianSystem
+import com.chartslib.charts.cartesian.components.CartesianSystemPreferences
+import com.chartslib.charts.cartesian.components.HorizontalLine
+import com.chartslib.charts.cartesian.components.HorizontalLineAlignment
+import com.chartslib.charts.cartesian.components.LabelSizePreferences
+import com.chartslib.charts.cartesian.components.LineStyle
+import com.chartslib.charts.cartesian.components.Padding
+import com.chartslib.charts.cartesian.components.VerticalLine
+import com.chartslib.charts.cartesian.components.VerticalLineAlignment
 import com.chartslib.ui.theme.ChartsLibTheme
+import java.util.Collections
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,7 +70,7 @@ class MainActivity : ComponentActivity() {
                         "July"
                     )
 
-                    Column {
+                    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                         BarChart(
                             chartConfiguration = BarChartConfiguration(
                                 modifier = Modifier
@@ -71,6 +86,154 @@ class MainActivity : ComponentActivity() {
                                 )
                             )
                         )
+//
+//                        val horizontalLines =
+//                            Collections.nCopies(5, HorizontalLine())
+//                        val verticalLines =
+//                            Collections.nCopies(5, VerticalLine())
+//
+//                        CartesianSystem(
+//                            modifier = Modifier
+//                                .background(Color.White)
+//                                .padding(10.dp)
+//                                .height(200.dp),
+//                            cartesianSysPrefs = CartesianSystemPreferences(
+//                                horizontalLines = horizontalLines,
+//                                verticalLines = verticalLines
+//                            )
+//                        )
+
+//                        val months = listOf(
+//                            "April",
+//                            "March",
+//                            "June",
+//                            "October",
+//                            "November"
+//                        )
+//                        val horizontalLines = mutableListOf<HorizontalLine>()
+//                        repeat(5) {
+//                            horizontalLines.add(HorizontalLine(label = (it * 100).toString())) // every next label is 100 greater than previous
+//                        }
+//
+//                        val verticalLines = mutableListOf<VerticalLine>()
+//                        repeat(5) {
+//                            verticalLines.add(VerticalLine(label = months[it]))
+//                        }
+//
+//                        CartesianSystem(
+//                            modifier = Modifier
+//                                .background(Color.White)
+//                                .padding(10.dp)
+//                                .height(200.dp),
+//                            cartesianSysPrefs = CartesianSystemPreferences(
+//                                horizontalLines = horizontalLines,
+//                                verticalLines = verticalLines,
+//
+//                                horizontalLabelsPreferences = LabelSizePreferences(
+//                                    style = TextStyle(fontSize = 10.sp),
+//                                    labelAndChartPadding = 20.dp,
+//                                    maxWidth = 30.dp
+//                                ),
+//                                verticalLabelsPreferences = LabelSizePreferences(
+//                                    style = TextStyle(fontSize = 10.sp),
+//                                    labelAndChartPadding = 10.dp
+//                                )
+//                            )
+//                        )
+
+//val horizontalLines = mutableListOf<HorizontalLine>()
+//repeat(7) {
+//    if (it == 0) // make the first one stroke
+//        horizontalLines.add(HorizontalLine(lineStyle = LineStyle.StrokeLine))
+//    else
+//        horizontalLines.add(HorizontalLine())
+//}
+//
+//val verticalLines = mutableListOf<VerticalLine>()
+//repeat(4) {
+//    if (it == 3) {                          //if it last display text before line
+//        verticalLines.add(
+//            VerticalLine(
+//                label = (it * 100).toString(),
+//                labelAlignment = VerticalLineAlignment.BEFORE_LINE
+//            )
+//        )
+//    } else if (it == 0) {                   //if it first display text after line
+//        verticalLines.add(
+//            VerticalLine(
+//                label = (it * 100).toString(),
+//                labelAlignment = VerticalLineAlignment.AFTER_LINE,
+//                lineStyle = LineStyle.StrokeLine
+//            )
+//        )
+//    } else {
+//        verticalLines.add(VerticalLine()) //no text and default line
+//    }
+//}
+//
+//CartesianSystem(
+//    modifier = Modifier
+//        .background(Color.White)
+//        .padding(10.dp)
+//        .height(200.dp),
+//    cartesianSysPrefs = CartesianSystemPreferences(
+//        horizontalLines = horizontalLines,
+//        verticalLines = verticalLines,
+//
+//        horizontalLabelsPreferences = LabelSizePreferences(
+//            style = TextStyle(fontSize = 10.sp),
+//            labelAndChartPadding = 5.dp
+//        ),
+//        verticalLabelsPreferences = LabelSizePreferences(
+//            style = TextStyle(fontSize = 10.sp),
+//            maxWidth = 20.dp,
+//        ),
+//    )
+//)
+
+val horizontalLines = mutableListOf<HorizontalLine>()
+repeat(7) {
+    if (it == 0)
+        horizontalLines.add(HorizontalLine(lineStyle = LineStyle.StrokeLine))
+    else
+        horizontalLines.add(HorizontalLine())
+}
+
+val verticalLines = mutableListOf<VerticalLine>()
+repeat(9) {
+    if (it % 2 == 0)
+        verticalLines.add(VerticalLine())
+    else
+        verticalLines.add(
+            VerticalLine(
+                isLineVisible = false,
+                label = (it * 100).toString(),
+                labelAlignment = VerticalLineAlignment.CENTERED
+            )
+        )
+}
+
+CartesianSystem(
+    modifier = Modifier
+        .background(Color.White)
+        .padding(10.dp)
+        .height(200.dp),
+    cartesianSysPrefs = CartesianSystemPreferences(
+        horizontalLines = horizontalLines,
+        verticalLines = verticalLines,
+
+        horizontalLabelsPreferences = LabelSizePreferences(
+            style = TextStyle(fontSize = 10.sp),
+            labelAndChartPadding = 5.dp
+        ),
+        verticalLabelsPreferences = LabelSizePreferences(
+            style = TextStyle(fontSize = 10.sp),
+        ),
+
+        horizontalExtraPadding = Padding(bottom = 10.dp, top = 10.dp),
+        verticalExtraPadding = Padding(start = 10.dp, end = 10.dp)
+    )
+)
                     }
                 }
             }
