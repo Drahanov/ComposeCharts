@@ -1,0 +1,11 @@
+package com.chartslib.charts.line.models
+
+import androidx.compose.ui.graphics.Color
+import com.chartslib.ui.theme.Azure
+import java.util.UUID
+
+data class LineModel (
+    val id: Long = UUID.randomUUID().mostSignificantBits,
+    val points: List<Point>,
+    val color: Color = Azure,
+)

@@ -30,7 +30,8 @@ import kotlin.math.floor
 @Composable
 fun CartesianSystem(
     modifier: Modifier,
-    cartesianSysPrefs: CartesianSystemPreferences
+    cartesianSysPrefs: CartesianSystemPreferences,
+    content: (topLeft: Offset, width: Float, height: Float, drawScope: DrawScope) -> Unit = { _, _, _, _ -> }
 ) {
     Box(modifier = modifier) {
         val textMeasurer = rememberTextMeasurer()
@@ -62,7 +63,7 @@ fun CartesianSystem(
              * cos it will extend to the left by its full length if it is [VerticalLineAlignment.BEFORE_LINE] and by half if it is [VerticalLineAlignment.CENTERED].
              */
             var startExtraLabelSpace =
-                measuredVerticalLabels.maxBy { it.value.size.width }.value.size.width
+                if (measuredVerticalLabels.isNotEmpty()) measuredVerticalLabels.maxBy { it.value.size.width }.value.size.width else 0
             if (verticalLines[0].labelAlignment == VerticalLineAlignment.CENTERED) {
                 if (measuredHorizontalLabels[0]!!.size.width / 2 > startExtraLabelSpace) {
                     startExtraLabelSpace = measuredHorizontalLabels[0]!!.size.width / 2
@@ -123,7 +124,7 @@ fun CartesianSystem(
             val height =
                 size.height - topExtraLabelSpace - bottomExtraLabelSpace - cartesianSysPrefs.horizontalLabelsPreferences.labelAndChartPadding.toPx()
 
-            drawHorizontalLines(
+            val contentTopAndBottom = drawHorizontalLines(
                 lines = horizontalLines,
                 startOffset = Offset(
                     startExtraLabelSpace.toFloat() + cartesianSysPrefs.verticalLabelsPreferences.labelAndChartPadding.toPx(),
@@ -137,7 +138,7 @@ fun CartesianSystem(
                 extraPadding = cartesianSysPrefs.horizontalExtraPadding
             )
 
-            drawVerticalLines(
+            val contentStartAndEnd = drawVerticalLines(
                 lines = verticalLines,
                 startOffset = Offset(
                     startExtraLabelSpace.toFloat() + cartesianSysPrefs.verticalLabelsPreferences.labelAndChartPadding.toPx(),
@@ -149,6 +150,13 @@ fun CartesianSystem(
                 measuredTexts = measuredHorizontalLabels,
                 labelPadding = cartesianSysPrefs.horizontalLabelsPreferences.labelAndChartPadding.toPx(),
                 extraPadding = cartesianSysPrefs.verticalExtraPadding
+            )
+
+            content.invoke(
+                Offset(contentStartAndEnd.first, contentTopAndBottom.first),
+                contentStartAndEnd.second - contentStartAndEnd.first,
+                contentTopAndBottom.second - contentTopAndBottom.first,
+                this
             )
         }
     }
@@ -198,13 +206,17 @@ private fun drawHorizontalLines(
     measuredTexts: HashMap<Int, TextLayoutResult>,
     labelPadding: Float,
     extraPadding: Padding
-) {
+): Pair<Float, Float> {
+    var yContentTop = 0f
+    var yContentBottom = 0f
+
     drawScope.run {
         val sumOfLinesThickness = getSumOfLinesThickness(drawScope, lines.map { it.lineThickness })
 
         var horizontalLineYStart = startOffset.y + extraPadding.top.toPx()
         val lineWidth = width - extraPadding.start.toPx() - extraPadding.end.toPx()
         val lineX = startOffset.x + extraPadding.start.toPx()
+        yContentTop = horizontalLineYStart
 
         for (line in lines) {
             if (line.isLineVisible) {
@@ -269,12 +281,14 @@ private fun drawHorizontalLines(
                     horizontalLineYStart - labelY
                 )
             )
+            yContentBottom = horizontalLineYStart
 
             val step =
                 (height - sumOfLinesThickness - extraPadding.top.toPx() - extraPadding.bottom.toPx()) / (lines.size - 1) + line.lineThickness.toPx()
             horizontalLineYStart += step
         }
     }
+    return Pair(yContentTop, yContentBottom)
 }
 
 /**
@@ -290,13 +304,18 @@ private fun drawVerticalLines(
     measuredTexts: HashMap<Int, TextLayoutResult>,
     labelPadding: Float,
     extraPadding: Padding
-) {
+): Pair<Float, Float> {
+    var xContentStart = 0f
+    var xContentEnd = 0f
+
     drawScope.run {
         var verticalLineXStart = startOffset.x + extraPadding.start.toPx()
         val lineY = startOffset.y + extraPadding.top.toPx()
         val lineHeight = height - extraPadding.top.toPx() - extraPadding.bottom.toPx()
+        xContentStart = verticalLineXStart
 
-        val sumOfLinesThickness = getSumOfLinesThickness(drawScope, lines.map { it.lineThickness })
+        val sumOfLinesThickness =
+            getSumOfLinesThickness(drawScope, lines.map { it.lineThickness })
         for (line in lines) {
             if (line.isLineVisible)
                 if (line.lineStyle is LineStyle.StrokeLine)
@@ -353,10 +372,11 @@ private fun drawVerticalLines(
                 measuredTexts[lines.indexOf(line)]!!,
                 topLeft = Offset(verticalLineXStart - labelX, height + labelPadding)
             )
-
+            xContentEnd = verticalLineXStart
             verticalLineXStart += (width - sumOfLinesThickness - extraPadding.start.toPx() - extraPadding.end.toPx()) / (lines.size - 1) + line.lineThickness.toPx()
         }
     }
+    return Pair(xContentStart, xContentEnd)
 }
 
 /**

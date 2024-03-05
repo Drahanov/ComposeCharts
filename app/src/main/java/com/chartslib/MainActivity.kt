@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -13,13 +12,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.chartslib.charts.bar.components.BarChart
@@ -29,14 +26,13 @@ import com.chartslib.charts.bar.models.BarColumnModel
 import com.chartslib.charts.cartesian.components.CartesianSystem
 import com.chartslib.charts.cartesian.components.CartesianSystemPreferences
 import com.chartslib.charts.cartesian.components.HorizontalLine
-import com.chartslib.charts.cartesian.components.HorizontalLineAlignment
 import com.chartslib.charts.cartesian.components.LabelSizePreferences
 import com.chartslib.charts.cartesian.components.LineStyle
 import com.chartslib.charts.cartesian.components.Padding
 import com.chartslib.charts.cartesian.components.VerticalLine
 import com.chartslib.charts.cartesian.components.VerticalLineAlignment
+import com.chartslib.charts.line.components.LineChart
 import com.chartslib.ui.theme.ChartsLibTheme
-import java.util.Collections
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -191,49 +187,62 @@ class MainActivity : ComponentActivity() {
 //    )
 //)
 
-val horizontalLines = mutableListOf<HorizontalLine>()
-repeat(7) {
-    if (it == 0)
-        horizontalLines.add(HorizontalLine(lineStyle = LineStyle.StrokeLine))
-    else
-        horizontalLines.add(HorizontalLine())
-}
+                        val horizontalLines = mutableListOf<HorizontalLine>()
+                        repeat(7) {
+                            if (it == 0)
+                                horizontalLines.add(HorizontalLine(lineStyle = LineStyle.StrokeLine))
+                            else
+                                horizontalLines.add(HorizontalLine())
+                        }
 
-val verticalLines = mutableListOf<VerticalLine>()
-repeat(9) {
-    if (it % 2 == 0)
-        verticalLines.add(VerticalLine())
-    else
-        verticalLines.add(
-            VerticalLine(
-                isLineVisible = false,
-                label = (it * 100).toString(),
-                labelAlignment = VerticalLineAlignment.CENTERED
-            )
-        )
-}
+                        val verticalLines = mutableListOf<VerticalLine>()
+                        repeat(9) {
+                            if (it % 2 == 0)
+                                verticalLines.add(VerticalLine())
+                            else
+                                verticalLines.add(
+                                    VerticalLine(
+                                        isLineVisible = false,
+                                        label = (it * 100).toString(),
+                                        labelAlignment = VerticalLineAlignment.CENTERED
+                                    )
+                                )
+                        }
 
-CartesianSystem(
-    modifier = Modifier
-        .background(Color.White)
-        .padding(10.dp)
-        .height(200.dp),
-    cartesianSysPrefs = CartesianSystemPreferences(
-        horizontalLines = horizontalLines,
-        verticalLines = verticalLines,
+                        CartesianSystem(
+                            modifier = Modifier
+                                .background(Color.White)
+                                .padding(10.dp)
+                                .height(200.dp),
+                            cartesianSysPrefs = CartesianSystemPreferences(
+                                horizontalLines = horizontalLines,
+                                verticalLines = verticalLines,
 
-        horizontalLabelsPreferences = LabelSizePreferences(
-            style = TextStyle(fontSize = 10.sp),
-            labelAndChartPadding = 5.dp
-        ),
-        verticalLabelsPreferences = LabelSizePreferences(
-            style = TextStyle(fontSize = 10.sp),
-        ),
+                                horizontalLabelsPreferences = LabelSizePreferences(
+                                    style = TextStyle(fontSize = 10.sp),
+                                    labelAndChartPadding = 5.dp
+                                ),
+                                verticalLabelsPreferences = LabelSizePreferences(
+                                    style = TextStyle(fontSize = 10.sp),
+                                ),
 
-        horizontalExtraPadding = Padding(bottom = 10.dp, top = 10.dp),
-        verticalExtraPadding = Padding(start = 10.dp, end = 10.dp)
-    )
-)
+                                horizontalExtraPadding = Padding(bottom = 10.dp, top = 10.dp),
+                                verticalExtraPadding = Padding(start = 10.dp, end = 10.dp)
+                            )
+                        ){ topLeft, width, height, drawScope ->
+                            drawScope.drawRect(
+                                topLeft = topLeft,
+                                color = Color.Blue,
+                                size = Size(width, height)
+                            )
+                        }
+
+                       LineChart(
+                           modifier = Modifier
+                               .background(Color.White)
+                               .padding(10.dp)
+                               .height(200.dp)
+                       )
                     }
                 }
             }

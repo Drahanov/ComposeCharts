@@ -1,8 +1,10 @@
 package com.chartslib.charts.cartesian.components
 
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -34,7 +36,7 @@ data class CartesianSystemPreferences(
     ),
 
     val horizontalExtraPadding: Padding = Padding(),
-    val verticalExtraPadding: Padding = Padding()
+    val verticalExtraPadding: Padding = Padding(),
 )
 
 /**
@@ -54,7 +56,59 @@ data class HorizontalLine(
     val labelAlignment: HorizontalLineAlignment = HorizontalLineAlignment.CENTERED,
     val label: String = "",
     val lineStyle: LineStyle = LineStyle.DashedLine()
-)
+) {
+    class Builder {
+        private var steps: Int = 0
+        private var labels: (Int) -> String = { it.toString() }
+        private var visibleLines: (Int) -> Boolean = { true }
+        private var lineStyles: (Int) -> LineStyle = { LineStyle.DashedLine() }
+        private var labelAlignment: (Int) -> HorizontalLineAlignment = { HorizontalLineAlignment.CENTERED }
+        private var linesThickness: (Int) -> Dp = { 1.dp }
+        private var lineBrush: (Int) -> Brush = { SolidColor(Color.LightGray) }
+
+        fun setSteps(steps: Int) = apply {
+            this.steps = steps
+        }
+
+        fun setVisibleLines(visibleLines: (Int) -> Boolean) = apply {
+            this.visibleLines = visibleLines
+        }
+
+        fun setLineStyles(linesStyle: (Int) -> LineStyle) = apply {
+            this.lineStyles = linesStyle
+        }
+
+        fun setLabelAlignment(labelAlignment: (Int) -> HorizontalLineAlignment) = apply {
+            this.labelAlignment = labelAlignment
+        }
+
+        fun setLinesThickness(linesThickness: (Int) -> Dp) = apply {
+            this.linesThickness = linesThickness
+        }
+
+        fun setLinesBrush(linesBrush: (Int) -> Brush) = apply {
+            this.lineBrush = linesBrush
+        }
+
+        fun build(): List<HorizontalLine> {
+            val lines = mutableListOf<HorizontalLine>()
+            for (i in 0..steps) {
+                lines.add(
+                    HorizontalLine(
+                        label = labels.invoke(i),
+                        isLineVisible = visibleLines.invoke(i),
+                        lineStyle = lineStyles.invoke(i),
+                        lineThickness = linesThickness.invoke(i),
+                        lineBrush = lineBrush.invoke(i),
+                        labelAlignment = labelAlignment.invoke(i)
+                    )
+                )
+            }
+            return lines
+        }
+    }
+}
+
 
 /**
  * [VerticalLine] vertical line configurations.
@@ -73,7 +127,25 @@ data class VerticalLine(
     val labelAlignment: VerticalLineAlignment = VerticalLineAlignment.CENTERED,
     val label: String = "",
     val lineStyle: LineStyle = LineStyle.DashedLine()
-)
+) {
+    class Builder {
+        private var steps: Int = 0
+        private var label: (Int) -> String = { it.toString() }
+
+        fun setSteps(steps: Int) = apply {
+            this.steps = steps
+        }
+
+        fun build(): List<VerticalLine> {
+            val lines = mutableListOf<VerticalLine>()
+            for (i in 0..5) {
+                lines.add(VerticalLine(label = label.invoke(i)))
+            }
+            return lines
+        }
+    }
+}
+
 
 /**
  * [HorizontalLineAlignment] indicates how the label will be positioned relative to the line to which it is attached.
