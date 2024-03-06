@@ -32,6 +32,8 @@ import com.chartslib.charts.cartesian.components.Padding
 import com.chartslib.charts.cartesian.components.VerticalLine
 import com.chartslib.charts.cartesian.components.VerticalLineAlignment
 import com.chartslib.charts.line.components.LineChart
+import com.chartslib.charts.line.models.LineModel
+import com.chartslib.charts.line.models.Point
 import com.chartslib.ui.theme.ChartsLibTheme
 
 class MainActivity : ComponentActivity() {
@@ -229,7 +231,7 @@ class MainActivity : ComponentActivity() {
                                 horizontalExtraPadding = Padding(bottom = 10.dp, top = 10.dp),
                                 verticalExtraPadding = Padding(start = 10.dp, end = 10.dp)
                             )
-                        ){ topLeft, width, height, drawScope ->
+                        ) { topLeft, width, height, drawScope ->
                             drawScope.drawRect(
                                 topLeft = topLeft,
                                 color = Color.Blue,
@@ -237,12 +239,56 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                       LineChart(
-                           modifier = Modifier
-                               .background(Color.White)
-                               .padding(10.dp)
-                               .height(200.dp)
-                       )
+                        LineChart(
+                            modifier = Modifier
+                                .background(Color.White)
+                                .padding(10.dp)
+                                .height(200.dp),
+                            lines = LineModel(
+                                points = listOf(
+                                    Point(1f, 2f),
+                                    Point(2f, 5f),
+                                    Point(3f, 5f),
+                                    Point(0f, 10f),
+                                    Point(0f, 10f),
+                                    Point(0f, 11f),
+                                )
+                            )
+                        )
+
+
+                        val points = listOf(
+                            Point(1f, 2f),
+                            Point(2f, 5f),
+                            Point(3f, 5f),
+                            Point(0f, 10f),
+                            Point(0f, 10f),
+                            Point(0f, 11f),
+                        )
+
+                        val max = points.maxOf { it.y }
+                        val min = points.minOf { it.y }
+
+                        val steps = 5
+
+                        val diff = max - min
+                        val diffPerValue = diff / (steps - 1)
+
+                        val h = HorizontalLine.Builder()
+                            .setSteps(5).setLabels { position ->
+                                (min + diffPerValue * position).toString()
+                            }.build()
+
+                        LineChart(
+                            modifier = Modifier
+                                .background(Color.White)
+                                .padding(10.dp)
+                                .height(200.dp),
+                            lines = LineModel(
+                                points = points
+                            ),
+                            horizontalLines = h
+                        )
                     }
                 }
             }

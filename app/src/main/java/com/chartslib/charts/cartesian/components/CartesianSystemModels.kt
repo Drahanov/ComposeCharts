@@ -70,6 +70,10 @@ data class HorizontalLine(
             this.steps = steps
         }
 
+        fun setLabels(labels: (Int) -> String) = apply {
+            this.labels = labels
+        }
+
         fun setVisibleLines(visibleLines: (Int) -> Boolean) = apply {
             this.visibleLines = visibleLines
         }
@@ -92,7 +96,7 @@ data class HorizontalLine(
 
         fun build(): List<HorizontalLine> {
             val lines = mutableListOf<HorizontalLine>()
-            for (i in 0..steps) {
+            for (i in 0..steps - 1) {
                 lines.add(
                     HorizontalLine(
                         label = labels.invoke(i),
