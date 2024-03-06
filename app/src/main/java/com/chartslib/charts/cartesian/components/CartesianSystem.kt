@@ -154,8 +154,8 @@ fun CartesianSystem(
 
             content.invoke(
                 Offset(contentStartAndEnd.first, contentTopAndBottom.first),
-                contentStartAndEnd.second - contentStartAndEnd.first,
-                contentTopAndBottom.second - contentTopAndBottom.first,
+                width,
+                height,
                 this
             )
         }

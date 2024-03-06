@@ -189,81 +189,80 @@ class MainActivity : ComponentActivity() {
 //    )
 //)
 
-                        val horizontalLines = mutableListOf<HorizontalLine>()
-                        repeat(7) {
-                            if (it == 0)
-                                horizontalLines.add(HorizontalLine(lineStyle = LineStyle.StrokeLine))
-                            else
-                                horizontalLines.add(HorizontalLine())
-                        }
-
-                        val verticalLines = mutableListOf<VerticalLine>()
-                        repeat(9) {
-                            if (it % 2 == 0)
-                                verticalLines.add(VerticalLine())
-                            else
-                                verticalLines.add(
-                                    VerticalLine(
-                                        isLineVisible = false,
-                                        label = (it * 100).toString(),
-                                        labelAlignment = VerticalLineAlignment.CENTERED
-                                    )
-                                )
-                        }
-
-                        CartesianSystem(
-                            modifier = Modifier
-                                .background(Color.White)
-                                .padding(10.dp)
-                                .height(200.dp),
-                            cartesianSysPrefs = CartesianSystemPreferences(
-                                horizontalLines = horizontalLines,
-                                verticalLines = verticalLines,
-
-                                horizontalLabelsPreferences = LabelSizePreferences(
-                                    style = TextStyle(fontSize = 10.sp),
-                                    labelAndChartPadding = 5.dp
-                                ),
-                                verticalLabelsPreferences = LabelSizePreferences(
-                                    style = TextStyle(fontSize = 10.sp),
-                                ),
-
-                                horizontalExtraPadding = Padding(bottom = 10.dp, top = 10.dp),
-                                verticalExtraPadding = Padding(start = 10.dp, end = 10.dp)
-                            )
-                        ) { topLeft, width, height, drawScope ->
-                            drawScope.drawRect(
-                                topLeft = topLeft,
-                                color = Color.Blue,
-                                size = Size(width, height)
-                            )
-                        }
-
-                        LineChart(
-                            modifier = Modifier
-                                .background(Color.White)
-                                .padding(10.dp)
-                                .height(200.dp),
-                            lines = LineModel(
-                                points = listOf(
-                                    Point(1f, 2f),
-                                    Point(2f, 5f),
-                                    Point(3f, 5f),
-                                    Point(0f, 10f),
-                                    Point(0f, 10f),
-                                    Point(0f, 11f),
-                                )
-                            )
-                        )
+//                        val horizontalLines = mutableListOf<HorizontalLine>()
+//                        repeat(7) {
+//                            if (it == 0)
+//                                horizontalLines.add(HorizontalLine(lineStyle = LineStyle.StrokeLine))
+//                            else
+//                                horizontalLines.add(HorizontalLine())
+//                        }
+//
+//                        val verticalLines = mutableListOf<VerticalLine>()
+//                        repeat(9) {
+//                            if (it % 2 == 0)
+//                                verticalLines.add(VerticalLine())
+//                            else
+//                                verticalLines.add(
+//                                    VerticalLine(
+//                                        isLineVisible = false,
+//                                        label = (it * 100).toString(),
+//                                        labelAlignment = VerticalLineAlignment.CENTERED
+//                                    )
+//                                )
+//                        }
+//
+//                        CartesianSystem(
+//                            modifier = Modifier
+//                                .background(Color.White)
+//                                .padding(10.dp)
+//                                .height(200.dp),
+//                            cartesianSysPrefs = CartesianSystemPreferences(
+//                                horizontalLines = horizontalLines,
+//                                verticalLines = verticalLines,
+//
+//                                horizontalLabelsPreferences = LabelSizePreferences(
+//                                    style = TextStyle(fontSize = 10.sp),
+//                                    labelAndChartPadding = 5.dp
+//                                ),
+//                                verticalLabelsPreferences = LabelSizePreferences(
+//                                    style = TextStyle(fontSize = 10.sp),
+//                                ),
+//
+//                                horizontalExtraPadding = Padding(bottom = 10.dp, top = 10.dp),
+//                                verticalExtraPadding = Padding(start = 10.dp, end = 10.dp)
+//                            )
+//                        ) { topLeft, width, height, drawScope ->
+//                            drawScope.drawRect(
+//                                topLeft = topLeft,
+//                                color = Color.Blue,
+//                                size = Size(width, height)
+//                            )
+//                        }
+//
+//                        LineChart(
+//                            modifier = Modifier
+//                                .background(Color.White)
+//                                .padding(10.dp)
+//                                .height(200.dp),
+//                            lines = LineModel(
+//                                points = listOf(
+//                                    Point(1f, 2f),
+//                                    Point(2f, 5f),
+//                                    Point(3f, 5f),
+//                                    Point(0f, 10f),
+//                                    Point(0f, 10f),
+//                                    Point(0f, 11f),
+//                                )
+//                            )
+//                        )
 
 
                         val points = listOf(
                             Point(1f, 2f),
-                            Point(2f, 5f),
-                            Point(3f, 5f),
-                            Point(0f, 10f),
-                            Point(0f, 10f),
-                            Point(0f, 11f),
+                            Point(2f, 2f),
+                            Point(3f, 2f),
+                            Point(4f, 2f),
+                            Point(5f, 4f),
                         )
 
                         val max = points.maxOf { it.y }
