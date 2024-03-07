@@ -259,10 +259,10 @@ class MainActivity : ComponentActivity() {
 
                         val points = listOf(
                             Point(1f, 2f),
-                            Point(2f, 2f),
-                            Point(3f, 2f),
-                            Point(4f, 2f),
-                            Point(5f, 4f),
+                            Point(3f, 4f),
+                            Point(5f, 2f),
+                            Point(7f, 7f),
+                            Point(9f, 4f)
                         )
 
                         val max = points.maxOf { it.y }
@@ -285,8 +285,7 @@ class MainActivity : ComponentActivity() {
                                 .height(200.dp),
                             lines = LineModel(
                                 points = points
-                            ),
-                            horizontalLines = h
+                            )
                         )
                     }
                 }

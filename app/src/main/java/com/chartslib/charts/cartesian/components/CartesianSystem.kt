@@ -17,6 +17,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.chartslib.charts.line.models.SizePreferences
 import kotlin.math.floor
 
 /**
@@ -37,7 +38,6 @@ fun CartesianSystem(
         val textMeasurer = rememberTextMeasurer()
 
         Canvas(modifier = Modifier.fillMaxSize()) {
-
             val horizontalLines = cartesianSysPrefs.horizontalLines.reversed()
             val verticalLines = cartesianSysPrefs.verticalLines
 
@@ -119,8 +119,13 @@ fun CartesianSystem(
                     0
                 }
 
+
             val width =
-                size.width - startExtraLabelSpace - cartesianSysPrefs.verticalLabelsPreferences.labelAndChartPadding.toPx() - endExtraLabels
+                when (cartesianSysPrefs.sizePreferences) {
+                    is SizePreferences.FixedToWidth -> size.width - startExtraLabelSpace - cartesianSysPrefs.verticalLabelsPreferences.labelAndChartPadding.toPx() - endExtraLabels
+                    is SizePreferences.SpecificSize -> (cartesianSysPrefs.sizePreferences.stepSize * verticalLines.size).toPx()
+                }
+
             val height =
                 size.height - topExtraLabelSpace - bottomExtraLabelSpace - cartesianSysPrefs.horizontalLabelsPreferences.labelAndChartPadding.toPx()
 
@@ -154,8 +159,8 @@ fun CartesianSystem(
 
             content.invoke(
                 Offset(contentStartAndEnd.first, contentTopAndBottom.first),
-                width,
-                height,
+                contentStartAndEnd.second - contentStartAndEnd.first,
+                contentTopAndBottom.second - contentTopAndBottom.first,
                 this
             )
         }

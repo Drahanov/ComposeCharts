@@ -1,53 +1,37 @@
 package com.chartslib.charts.line.components
 
-import android.icu.text.ListFormatter.Width
-import android.util.Log
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import com.chartslib.charts.bar.models.Axis
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.chartslib.charts.cartesian.components.CartesianSystem
 import com.chartslib.charts.cartesian.components.CartesianSystemPreferences
 import com.chartslib.charts.cartesian.components.HorizontalLine
-import com.chartslib.charts.cartesian.components.LabelSizePreferences
 import com.chartslib.charts.cartesian.components.VerticalLine
 import com.chartslib.charts.line.models.LineModel
+import com.chartslib.ui.theme.Azure
 
 @Composable
 fun LineChart(
     modifier: Modifier,
     lines: LineModel,
-    horizontalLines: List<HorizontalLine> = HorizontalLine.Builder().setSteps(5)
-        .setLabels { it.toString() }.build()
-//    verticalLabelsPreferences: LabelSizePreferences,
-//    horizontalLabelsPreferences: LabelSizePreferences,
-//    axisX: Axis = Axis(
-//        steps = lines.points.size,
-//        label = { it.toString() },
-//        maxValue = lines.points.maxOf { it.x }
-//    ),
-//    axisY: Axis = Axis(
-//        steps = lines.points.size,
-//        maxValue = lines.points.maxOf { it.y },
-//        label = { it.toString() }
-//    ),
+    cartesianSystemPreferences: CartesianSystemPreferences = CartesianSystemPreferences(
+        horizontalLines = HorizontalLine.Builder().setSteps(5).build(),
+        verticalLines = VerticalLine.Builder().setSteps(lines.points.size)
+            .setLabels { lines.points[it].x.toString() }.build(),
+    ),
+    dotRadius: Dp = 3.5.dp
 ) {
-//    val horizontalLines = HorizontalLine.Builder().setSteps(2).build()
-    val verticalLines = VerticalLine.Builder().setSteps(2).build()
-
     Box(modifier = modifier) {
         CartesianSystem(
             modifier = Modifier
-                .fillMaxSize()
-                .clipToBounds(),
-            cartesianSysPrefs = CartesianSystemPreferences(horizontalLines, verticalLines)
+                .fillMaxSize(),
+            cartesianSysPrefs = cartesianSystemPreferences
         ) { start, width, height, drawScope ->
 
             val xPointsMax = lines.points.maxOf { it.x }
@@ -58,29 +42,35 @@ fun LineChart(
 
             val widthPerValue = width / (xPointsMax - xPointsMin)
             val heightPerValue = height / (yPointsMax - yPointsMin)
-            Log.d("HELLOD", widthPerValue.toString())
-            Log.d("HELLOD", width.toString())
-
             var currentX = start.x
 
             drawScope.run {
+
                 for (line in lines.points.indices) {
-                    val nextValue = if (line != lines.points.size - 1) lines.points[line + 1].x - lines.points[line].x else 0f
+                    if (line == lines.points.size - 1) break
+
+                    val nextValue = lines.points[line + 1].x - lines.points[line].x
                     val toDraw = nextValue * widthPerValue
+
+                    val nextYValue = lines.points[line + 1].y
+
+                    val currentLineVerticalPosition =
+                        height - ((lines.points[line].y - yPointsMin) * heightPerValue) + start.y
+                    val nextLineVerticalPosition =
+                        height - ((nextYValue - yPointsMin) * heightPerValue) + start.y
+
                     drawLine(
-                        brush = SolidColor(Color.Red),
-                        start = Offset(currentX, 0f),
-                        end = Offset(currentX + toDraw , 0f)
+                        brush = SolidColor(Azure),
+                        start = Offset(currentX, currentLineVerticalPosition),
+                        end = Offset(currentX + toDraw, nextLineVerticalPosition),
+                        strokeWidth = 4f
                     )
 
-//                    drawRect(
-//                        brush = SolidColor(Color.Red),
-//                        topLeft = Offset(currentX, start.y),
-//                        size = Size(height = 10f, width = toDraw
-//                        ))
-                    Log.d("TODRAW", (lines.points[line].y * heightPerValue).toString())
-                    currentX = currentX + toDraw
+                    if (line == 0)
+                        drawCircle(brush = SolidColor(Azure), center = Offset(currentX, currentLineVerticalPosition), radius = dotRadius.toPx())
 
+                    drawCircle(brush = SolidColor(Azure), center = Offset(currentX + toDraw, nextLineVerticalPosition), radius = dotRadius.toPx())
+                    currentX += toDraw
                 }
 
             }

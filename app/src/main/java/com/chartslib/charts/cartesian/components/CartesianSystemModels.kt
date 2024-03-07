@@ -9,6 +9,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.chartslib.charts.line.models.SizePreferences
 
 const val UNSPECIFIED_HEIGHT = Float.MIN_VALUE
 const val UNSPECIFIED_WIDTH = Float.MAX_VALUE
@@ -28,15 +29,13 @@ data class CartesianSystemPreferences(
     val horizontalLines: List<HorizontalLine>,
     val verticalLines: List<VerticalLine>,
 
-    val verticalLabelsPreferences: LabelSizePreferences = LabelSizePreferences(
-        style = TextStyle(fontSize = 10.sp),
-    ),
-    val horizontalLabelsPreferences: LabelSizePreferences = LabelSizePreferences(
-        style = TextStyle(fontSize = 10.sp),
-    ),
+    val verticalLabelsPreferences: LabelSizePreferences = LabelSizePreferences(),
+    val horizontalLabelsPreferences: LabelSizePreferences = LabelSizePreferences(),
 
     val horizontalExtraPadding: Padding = Padding(),
     val verticalExtraPadding: Padding = Padding(),
+
+    val sizePreferences: SizePreferences = SizePreferences.SpecificSize(100.dp)
 )
 
 /**
@@ -134,16 +133,21 @@ data class VerticalLine(
 ) {
     class Builder {
         private var steps: Int = 0
-        private var label: (Int) -> String = { it.toString() }
+        private var labels: (Int) -> String = { it.toString() }
 
         fun setSteps(steps: Int) = apply {
             this.steps = steps
         }
 
+        fun setLabels(labels: (Int) -> String) = apply {
+            this.labels = labels
+        }
+
+
         fun build(): List<VerticalLine> {
             val lines = mutableListOf<VerticalLine>()
-            for (i in 0..5) {
-                lines.add(VerticalLine(label = label.invoke(i)))
+            for (i in 0..steps - 1) {
+                lines.add(VerticalLine(label = labels.invoke(i)))
             }
             return lines
         }
@@ -179,11 +183,11 @@ enum class VerticalLineAlignment {
  * @param labelAndChartPadding padding from line (top between first horizontal line and labels and start between vertical and labels).
  */
 data class LabelSizePreferences(
-    val style: TextStyle,
+    val style: TextStyle = TextStyle(fontSize = 10.sp),
     val maxLines: Int = 1,
     val maxWidth: Dp = UNSPECIFIED_WIDTH.dp,
     val maxHeight: Dp = UNSPECIFIED_HEIGHT.dp,
-    val labelAndChartPadding: Dp = 5.dp,
+    val labelAndChartPadding: Dp = 10.dp,
 )
 
 data class Padding(
