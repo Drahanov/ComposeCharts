@@ -4,10 +4,16 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.clipRect
+import androidx.compose.ui.graphics.drawscope.inset
+import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextMeasurer
@@ -32,11 +38,11 @@ import kotlin.math.floor
 fun CartesianSystem(
     modifier: Modifier,
     cartesianSysPrefs: CartesianSystemPreferences,
-    content: (topLeft: Offset, width: Float, height: Float, drawScope: DrawScope) -> Unit = { _, _, _, _ -> }
+    position: MutableState<Float>,
+    content: (topLeft: Offset, width: Float, height: Float, drawScope: DrawScope) -> Unit = { _, _, _, _ -> },
 ) {
     Box(modifier = modifier) {
         val textMeasurer = rememberTextMeasurer()
-
         Canvas(modifier = Modifier.fillMaxSize()) {
             val horizontalLines = cartesianSysPrefs.horizontalLines.reversed()
             val verticalLines = cartesianSysPrefs.verticalLines
@@ -140,7 +146,8 @@ fun CartesianSystem(
                 height = height,
                 measuredTexts = measuredVerticalLabels,
                 labelPadding = cartesianSysPrefs.verticalLabelsPreferences.labelAndChartPadding.toPx(),
-                extraPadding = cartesianSysPrefs.horizontalExtraPadding
+                extraPadding = cartesianSysPrefs.horizontalExtraPadding,
+                position = position.value
             )
 
             val contentStartAndEnd = drawVerticalLines(
@@ -154,15 +161,21 @@ fun CartesianSystem(
                 height = height,
                 measuredTexts = measuredHorizontalLabels,
                 labelPadding = cartesianSysPrefs.horizontalLabelsPreferences.labelAndChartPadding.toPx(),
-                extraPadding = cartesianSysPrefs.verticalExtraPadding
+                extraPadding = cartesianSysPrefs.verticalExtraPadding,
+                position = position.value
             )
 
-            content.invoke(
-                Offset(contentStartAndEnd.first, contentTopAndBottom.first),
-                contentStartAndEnd.second - contentStartAndEnd.first,
-                contentTopAndBottom.second - contentTopAndBottom.first,
-                this
-            )
+
+            clipRect(left = contentStartAndEnd.first) {
+                translate(left = position.value) {
+                    content.invoke(
+                        Offset(contentStartAndEnd.first, contentTopAndBottom.first),
+                        contentStartAndEnd.second - contentStartAndEnd.first,
+                        contentTopAndBottom.second - contentTopAndBottom.first,
+                        this
+                    )
+                }
+            }
         }
     }
 }
@@ -210,10 +223,12 @@ private fun drawHorizontalLines(
     height: Float,
     measuredTexts: HashMap<Int, TextLayoutResult>,
     labelPadding: Float,
-    extraPadding: Padding
+    extraPadding: Padding,
+    position: Float
 ): Pair<Float, Float> {
     var yContentTop = 0f
     var yContentBottom = 0f
+
 
     drawScope.run {
         val sumOfLinesThickness = getSumOfLinesThickness(drawScope, lines.map { it.lineThickness })
@@ -308,13 +323,15 @@ private fun drawVerticalLines(
     height: Float,
     measuredTexts: HashMap<Int, TextLayoutResult>,
     labelPadding: Float,
-    extraPadding: Padding
+    extraPadding: Padding,
+    position: Float
 ): Pair<Float, Float> {
     var xContentStart = 0f
     var xContentEnd = 0f
 
     drawScope.run {
         var verticalLineXStart = startOffset.x + extraPadding.start.toPx()
+
         val lineY = startOffset.y + extraPadding.top.toPx()
         val lineHeight = height - extraPadding.top.toPx() - extraPadding.bottom.toPx()
         xContentStart = verticalLineXStart
@@ -322,41 +339,47 @@ private fun drawVerticalLines(
         val sumOfLinesThickness =
             getSumOfLinesThickness(drawScope, lines.map { it.lineThickness })
         for (line in lines) {
-            if (line.isLineVisible)
-                if (line.lineStyle is LineStyle.StrokeLine)
-                    drawRect(
-                        topLeft = Offset(verticalLineXStart, lineY),
-                        brush = line.lineBrush,
-                        size = Size(
-                            line.lineThickness.toPx(),
-                            lineHeight
-                        )
-                    )
-                else if (line.lineStyle is LineStyle.DashedLine) {
-                    val dashLength = line.lineStyle.dashLength.toPx()
-                    val spaceLength = line.lineStyle.spaceLength.toPx()
-
-                    val countOfDashes = floor(lineHeight / (dashLength + spaceLength)).toInt()
-                    val spacesTogether = lineHeight - countOfDashes * dashLength
-                    val space = spacesTogether / (countOfDashes - 1)
-
-                    var yPosition = lineY
-                    for (i in 0..<countOfDashes) {
-                        drawRect(
-                            topLeft = Offset(
-                                verticalLineXStart,
-                                yPosition
-                            ),
-                            brush = line.lineBrush,
-                            size = Size(
-                                height = if (countOfDashes == 1) lineHeight else dashLength,
-                                width = line.lineThickness.toPx()
+            clipRect(left = xContentStart) {
+                translate(left = position) {
+                    if (line.isLineVisible)
+                        if (line.lineStyle is LineStyle.StrokeLine)
+                            drawRect(
+                                topLeft = Offset(verticalLineXStart, lineY),
+                                brush = line.lineBrush,
+                                size = Size(
+                                    line.lineThickness.toPx(),
+                                    lineHeight
+                                )
                             )
-                        )
+                        else if (line.lineStyle is LineStyle.DashedLine) {
+                            val dashLength = line.lineStyle.dashLength.toPx()
+                            val spaceLength = line.lineStyle.spaceLength.toPx()
 
-                        yPosition += dashLength + space
-                    }
+                            val countOfDashes =
+                                floor(lineHeight / (dashLength + spaceLength)).toInt()
+                            val spacesTogether = lineHeight - countOfDashes * dashLength
+                            val space = spacesTogether / (countOfDashes - 1)
+
+                            var yPosition = lineY
+                            for (i in 0..<countOfDashes) {
+                                drawRect(
+                                    topLeft = Offset(
+                                        verticalLineXStart,
+                                        yPosition
+                                    ),
+                                    brush = line.lineBrush,
+                                    size = Size(
+                                        height = if (countOfDashes == 1) lineHeight else dashLength,
+                                        width = line.lineThickness.toPx()
+                                    )
+                                )
+
+
+                                yPosition += dashLength + space
+                            }
+                        }
                 }
+            }
 
             val labelX =
                 when (line.labelAlignment) {
@@ -373,13 +396,17 @@ private fun drawVerticalLines(
                     }
                 }
 
-            drawText(
-                measuredTexts[lines.indexOf(line)]!!,
-                topLeft = Offset(verticalLineXStart - labelX, height + labelPadding)
-            )
+            translate(left = position) {
+                drawText(
+                    measuredTexts[lines.indexOf(line)]!!,
+                    topLeft = Offset(verticalLineXStart - labelX, height + labelPadding)
+                )
+            }
             xContentEnd = verticalLineXStart
             verticalLineXStart += (width - sumOfLinesThickness - extraPadding.start.toPx() - extraPadding.end.toPx()) / (lines.size - 1) + line.lineThickness.toPx()
         }
+
+
     }
     return Pair(xContentStart, xContentEnd)
 }

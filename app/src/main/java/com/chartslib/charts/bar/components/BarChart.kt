@@ -33,7 +33,7 @@ import kotlin.math.ceil
 
 @Composable
 fun BarChart(
-    chartConfiguration: BarChartConfiguration
+    chartConfiguration: BarChartConfiguration,
 ) {
     val position = remember { mutableStateOf(0f) }
     val isMovable = remember { mutableStateOf(false) }
