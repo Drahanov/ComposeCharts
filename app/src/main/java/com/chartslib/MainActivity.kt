@@ -12,7 +12,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.listSaver
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -31,10 +37,14 @@ import com.chartslib.charts.cartesian.components.LineStyle
 import com.chartslib.charts.cartesian.components.Padding
 import com.chartslib.charts.cartesian.components.VerticalLine
 import com.chartslib.charts.cartesian.components.VerticalLineAlignment
+import com.chartslib.charts.donut.components.DonutChart
+import com.chartslib.charts.donut.models.DonutSegmentModel
 import com.chartslib.charts.line.components.LineChart
 import com.chartslib.charts.line.models.LineModel
 import com.chartslib.charts.line.models.Point
 import com.chartslib.ui.theme.ChartsLibTheme
+import com.chartslib.ui.theme.*
+import java.util.Collections
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,160 +94,161 @@ class MainActivity : ComponentActivity() {
                                 )
                             )
                         )
-//
-//                        val horizontalLines =
-//                            Collections.nCopies(5, HorizontalLine())
-//                        val verticalLines =
-//                            Collections.nCopies(5, VerticalLine())
-//
-//                        CartesianSystem(
-//                            modifier = Modifier
-//                                .background(Color.White)
-//                                .padding(10.dp)
-//                                .height(200.dp),
-//                            cartesianSysPrefs = CartesianSystemPreferences(
-//                                horizontalLines = horizontalLines,
-//                                verticalLines = verticalLines
-//                            )
-//                        )
 
-//                        val months = listOf(
-//                            "April",
-//                            "March",
-//                            "June",
-//                            "October",
-//                            "November"
-//                        )
-//                        val horizontalLines = mutableListOf<HorizontalLine>()
-//                        repeat(5) {
-//                            horizontalLines.add(HorizontalLine(label = (it * 100).toString())) // every next label is 100 greater than previous
-//                        }
-//
-//                        val verticalLines = mutableListOf<VerticalLine>()
-//                        repeat(5) {
-//                            verticalLines.add(VerticalLine(label = months[it]))
-//                        }
-//
-//                        CartesianSystem(
-//                            modifier = Modifier
-//                                .background(Color.White)
-//                                .padding(10.dp)
-//                                .height(200.dp),
-//                            cartesianSysPrefs = CartesianSystemPreferences(
-//                                horizontalLines = horizontalLines,
-//                                verticalLines = verticalLines,
-//
-//                                horizontalLabelsPreferences = LabelSizePreferences(
-//                                    style = TextStyle(fontSize = 10.sp),
-//                                    labelAndChartPadding = 20.dp,
-//                                    maxWidth = 30.dp
-//                                ),
-//                                verticalLabelsPreferences = LabelSizePreferences(
-//                                    style = TextStyle(fontSize = 10.sp),
-//                                    labelAndChartPadding = 10.dp
-//                                )
-//                            )
-//                        )
+                        val horizontalLines1 =
+                            Collections.nCopies(5, HorizontalLine())
+                        val verticalLines1 =
+                            Collections.nCopies(5, VerticalLine())
 
-//val horizontalLines = mutableListOf<HorizontalLine>()
-//repeat(7) {
-//    if (it == 0) // make the first one stroke
-//        horizontalLines.add(HorizontalLine(lineStyle = LineStyle.StrokeLine))
-//    else
-//        horizontalLines.add(HorizontalLine())
-//}
-//
-//val verticalLines = mutableListOf<VerticalLine>()
-//repeat(4) {
-//    if (it == 3) {                          //if it last display text before line
-//        verticalLines.add(
-//            VerticalLine(
-//                label = (it * 100).toString(),
-//                labelAlignment = VerticalLineAlignment.BEFORE_LINE
-//            )
-//        )
-//    } else if (it == 0) {                   //if it first display text after line
-//        verticalLines.add(
-//            VerticalLine(
-//                label = (it * 100).toString(),
-//                labelAlignment = VerticalLineAlignment.AFTER_LINE,
-//                lineStyle = LineStyle.StrokeLine
-//            )
-//        )
-//    } else {
-//        verticalLines.add(VerticalLine()) //no text and default line
-//    }
-//}
-//
-//CartesianSystem(
-//    modifier = Modifier
-//        .background(Color.White)
-//        .padding(10.dp)
-//        .height(200.dp),
-//    cartesianSysPrefs = CartesianSystemPreferences(
-//        horizontalLines = horizontalLines,
-//        verticalLines = verticalLines,
-//
-//        horizontalLabelsPreferences = LabelSizePreferences(
-//            style = TextStyle(fontSize = 10.sp),
-//            labelAndChartPadding = 5.dp
-//        ),
-//        verticalLabelsPreferences = LabelSizePreferences(
-//            style = TextStyle(fontSize = 10.sp),
-//            maxWidth = 20.dp,
-//        ),
-//    )
-//)
+                        CartesianSystem(
+                            modifier = Modifier
+                                .background(Color.White)
+                                .padding(10.dp)
+                                .height(200.dp),
+                            cartesianSysPrefs = CartesianSystemPreferences(
+                                horizontalLines = horizontalLines1,
+                                verticalLines = verticalLines1
+                            )
+                        )
 
-//                        val horizontalLines = mutableListOf<HorizontalLine>()
-//                        repeat(7) {
-//                            if (it == 0)
-//                                horizontalLines.add(HorizontalLine(lineStyle = LineStyle.StrokeLine))
-//                            else
-//                                horizontalLines.add(HorizontalLine())
-//                        }
+                        val months = listOf(
+                            "April",
+                            "March",
+                            "June",
+                            "October",
+                            "November"
+                        )
+                        val horizontalLines2 = mutableListOf<HorizontalLine>()
+                        repeat(5) {
+                            horizontalLines2.add(HorizontalLine(label = (it * 100).toString())) // every next label is 100 greater than previous
+                        }
+
+                        val verticalLines2 = mutableListOf<VerticalLine>()
+                        repeat(5) {
+                            verticalLines2.add(VerticalLine(label = months[it]))
+                        }
+
+                        CartesianSystem(
+                            modifier = Modifier
+                                .background(Color.White)
+                                .padding(10.dp)
+                                .height(200.dp),
+                            cartesianSysPrefs = CartesianSystemPreferences(
+                                horizontalLines = horizontalLines2,
+                                verticalLines = verticalLines2,
+
+                                horizontalLabelsPreferences = LabelSizePreferences(
+                                    style = TextStyle(fontSize = 10.sp),
+                                    labelAndChartPadding = 20.dp,
+                                    maxWidth = 30.dp
+                                ),
+                                verticalLabelsPreferences = LabelSizePreferences(
+                                    style = TextStyle(fontSize = 10.sp),
+                                    labelAndChartPadding = 10.dp
+                                )
+                            )
+                        )
+
+                        val horizontalLines3 = mutableListOf<HorizontalLine>()
+                        repeat(7) {
+                            if (it == 0) // make the first one stroke
+                                horizontalLines3.add(HorizontalLine(lineStyle = LineStyle.StrokeLine))
+                            else
+                                horizontalLines3.add(HorizontalLine())
+                        }
+
+                        val verticalLines3 = mutableListOf<VerticalLine>()
+                        repeat(4) {
+                            if (it == 3) {                          //if it last display text before line
+                                verticalLines3.add(
+                                    VerticalLine(
+                                        label = (it * 100).toString(),
+                                        labelAlignment = VerticalLineAlignment.BEFORE_LINE
+                                    )
+                                )
+                            } else if (it == 0) {                   //if it first display text after line
+                                verticalLines3.add(
+                                    VerticalLine(
+                                        label = (it * 100).toString(),
+                                        labelAlignment = VerticalLineAlignment.AFTER_LINE,
+                                        lineStyle = LineStyle.StrokeLine
+                                    )
+                                )
+                            } else {
+                                verticalLines3.add(VerticalLine()) //no text and default line
+                            }
+                        }
+
+                        CartesianSystem(
+                            modifier = Modifier
+                                .background(Color.White)
+                                .padding(10.dp)
+                                .height(200.dp),
+                            cartesianSysPrefs = CartesianSystemPreferences(
+                                horizontalLines = horizontalLines3,
+                                verticalLines = verticalLines3,
+
+                                horizontalLabelsPreferences = LabelSizePreferences(
+                                    style = TextStyle(fontSize = 10.sp),
+                                    labelAndChartPadding = 5.dp
+                                ),
+                                verticalLabelsPreferences = LabelSizePreferences(
+                                    style = TextStyle(fontSize = 10.sp),
+                                    maxWidth = 20.dp,
+                                ),
+                            )
+                        )
+
+                        val horizontalLines = mutableListOf<HorizontalLine>()
+                        repeat(7) {
+                            if (true)
+                                horizontalLines.add(
+                                    HorizontalLine(
+                                        lineStyle = LineStyle.StrokeLine,
+                                        label = it.toString()
+                                    )
+                                )
+                            else
+                                horizontalLines.add(HorizontalLine())
+                        }
+
+                        val verticalLines = mutableListOf<VerticalLine>()
+                        repeat(9) {
+                            if (it % 2 == 0)
+                                verticalLines.add(VerticalLine())
+                            else
+                                verticalLines.add(
+                                    VerticalLine(
+                                        isLineVisible = false,
+                                        label = (it * 100).toString(),
+                                        labelAlignment = VerticalLineAlignment.CENTERED
+                                    )
+                                )
+                        }
 //
-//                        val verticalLines = mutableListOf<VerticalLine>()
-//                        repeat(9) {
-//                            if (it % 2 == 0)
-//                                verticalLines.add(VerticalLine())
-//                            else
-//                                verticalLines.add(
-//                                    VerticalLine(
-//                                        isLineVisible = false,
-//                                        label = (it * 100).toString(),
-//                                        labelAlignment = VerticalLineAlignment.CENTERED
-//                                    )
-//                                )
-//                        }
-//
-//                        CartesianSystem(
-//                            modifier = Modifier
-//                                .background(Color.White)
-//                                .padding(10.dp)
-//                                .height(200.dp),
-//                            cartesianSysPrefs = CartesianSystemPreferences(
-//                                horizontalLines = horizontalLines,
-//                                verticalLines = verticalLines,
-//
-//                                horizontalLabelsPreferences = LabelSizePreferences(
-//                                    style = TextStyle(fontSize = 10.sp),
-//                                    labelAndChartPadding = 5.dp
-//                                ),
-//                                verticalLabelsPreferences = LabelSizePreferences(
-//                                    style = TextStyle(fontSize = 10.sp),
-//                                ),
-//
-//                                horizontalExtraPadding = Padding(bottom = 10.dp, top = 10.dp),
-//                                verticalExtraPadding = Padding(start = 10.dp, end = 10.dp)
-//                            )
-//                        ) { topLeft, width, height, drawScope ->
-//                            drawScope.drawRect(
-//                                topLeft = topLeft,
-//                                color = Color.Blue,
-//                                size = Size(width, height)
-//                            )
-//                        }
+                        CartesianSystem(
+                            modifier = Modifier
+                                .background(Color.White)
+                                .padding(10.dp)
+                                .height(200.dp),
+                            cartesianSysPrefs = CartesianSystemPreferences(
+                                horizontalLines = horizontalLines,
+                                verticalLines = verticalLines,
+
+                                horizontalLabelsPreferences = LabelSizePreferences(
+                                    style = TextStyle(fontSize = 10.sp),
+                                    labelAndChartPadding = 5.dp
+                                ),
+                                verticalLabelsPreferences = LabelSizePreferences(
+                                    style = TextStyle(fontSize = 10.sp),
+                                ),
+
+                                horizontalExtraPadding = Padding(bottom = 10.dp, top = 10.dp),
+                                verticalExtraPadding = Padding(start = 10.dp, end = 10.dp)
+                            )
+                        ) { topLeft, width, height, drawScope ->
+
+                        }
 //
 //                        LineChart(
 //                            modifier = Modifier
@@ -256,13 +267,12 @@ class MainActivity : ComponentActivity() {
 //                            )
 //                        )
 
-
                         val points = listOf(
                             Point(1f, 2f),
                             Point(3f, 4f),
-                            Point(5f, 2f),
-                            Point(7f, 7f),
-                            Point(9f, 4f)
+                            Point(9f, 2f),
+                            Point(10f, 7f),
+                            Point(15f, 4f)
                         )
 
                         val max = points.maxOf { it.y }
@@ -287,9 +297,93 @@ class MainActivity : ComponentActivity() {
                                 points = points
                             )
                         )
+
+
+                        val listOfData2 =
+                            rememberMutableStateListOf(
+                                DonutSegmentModel(
+                                    value = 29,
+                                    color = Palettes1
+                                ),
+                                DonutSegmentModel(
+                                    value = 10,
+                                    color = Palettes5
+                                ),
+                                DonutSegmentModel(
+                                    value = 21,
+                                    color = Palettes2
+                                ),
+                                DonutSegmentModel(
+                                    value = 32,
+                                    color = Palettes3
+                                ),
+                                DonutSegmentModel(
+                                    value = 10,
+                                    color = Palettes4
+                                )
+                            )
+                        val pieDataList = remember {
+                            mutableStateListOf(
+                                DonutSegmentModel(
+                                    value = 29,
+                                    color = Palettes1
+                                ),
+                                DonutSegmentModel(
+                                    value = 10,
+                                    color = Palettes5
+                                ),
+                                DonutSegmentModel(
+                                    value = 21,
+                                    color = Palettes2
+                                ),
+                                DonutSegmentModel(
+                                    value = 32,
+                                    color = Palettes3
+                                ),
+                                DonutSegmentModel(
+                                    value = 10,
+                                    color = Palettes4
+                                )
+                            )
+                        }
+
+                        DonutChart(
+                            modifier = Modifier
+                                .background(Color.White)
+                                .padding(10.dp)
+                                .height(200.dp),
+                            segments = pieDataList,
+                            onSegmentSelected = { itemId ->
+                                val element = pieDataList.find { it.id == itemId }
+                                val index = pieDataList.indexOf(element)
+
+                                pieDataList[index] =
+                                    pieDataList[index].copy(isSelected = !pieDataList[index].isSelected)
+                            }
+                        )
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+fun <T : Any> rememberMutableStateListOf(vararg elements: T): SnapshotStateList<T> {
+    return rememberSaveable(
+        saver = listSaver(
+            save = { stateList ->
+                if (stateList.isNotEmpty()) {
+                    val first = stateList.first()
+                    if (!canBeSaved(first)) {
+                        throw IllegalStateException("${first::class} cannot be saved. By default only types which can be stored in the Bundle class can be saved.")
+                    }
+                }
+                stateList.toList()
+            },
+            restore = { it.toMutableStateList() }
+        )
+    ) {
+        elements.toList().toMutableStateList()
     }
 }

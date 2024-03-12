@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -37,39 +36,12 @@ fun LineChart(
     val w = remember {
         mutableStateOf(0f)
     }
-    Box(modifier = modifier.pointerInput(true) {
-        detectHorizontalDragGestures { change, dragAmount ->
-            val minPosition = 0f
-            val maxPosition =
-            if (cartesianSystemPreferences.sizePreferences is SizePreferences.SpecificSize) {
-                (cartesianSystemPreferences.sizePreferences.stepSize.toPx() * lines.points.size + w.value) * (-1)
-            } else 0f
-
-            if (true) {
-                if (dragAmount < 0) {
-                    if (position.value > maxPosition) {
-                        var positionAfterAdd = position.value + dragAmount
-                        if (positionAfterAdd < maxPosition) {
-                            positionAfterAdd = maxPosition
-                        }
-                        position.value = positionAfterAdd
-                    }
-                } else if (position.value < minPosition) {
-                    var positionAfterAdd = position.value + dragAmount
-                    if (positionAfterAdd > minPosition) {
-                        positionAfterAdd = 0f
-                    }
-                    position.value = positionAfterAdd
-                }
-            }
-        }
-    }) {
+    Box {
         CartesianSystem(
             modifier = Modifier
                 .fillMaxSize()
                 .clipToBounds(),
             cartesianSysPrefs = cartesianSystemPreferences,
-            position = position
         ) { start, width, height, drawScope ->
             w.value = width
             val xPointsMax = lines.points.maxOf { it.x }

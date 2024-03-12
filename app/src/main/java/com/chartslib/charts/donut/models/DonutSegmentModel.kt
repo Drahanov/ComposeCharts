@@ -5,8 +5,8 @@ import java.io.Serializable
 import java.util.UUID
 
 data class DonutSegmentModel(
-    val id: Long = UUID.randomUUID().mostSignificantBits,
     val value: Int,
+    val id: Long = UUID.randomUUID().mostSignificantBits,
     val isSelected: Boolean = false,
     val color: Color = Color.Unspecified
 ): Serializable

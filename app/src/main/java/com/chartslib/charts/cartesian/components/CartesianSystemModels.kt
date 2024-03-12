@@ -1,10 +1,8 @@
 package com.chartslib.charts.cartesian.components
 
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -35,7 +33,7 @@ data class CartesianSystemPreferences(
     val horizontalExtraPadding: Padding = Padding(),
     val verticalExtraPadding: Padding = Padding(),
 
-    val sizePreferences: SizePreferences = SizePreferences.SpecificSize(100.dp)
+    val sizePreferences: SizePreferences = SizePreferences.FixedToWidth
 )
 
 /**
