@@ -29,8 +29,3 @@ data class Point(
     val x: Float,
     val y: Float
 )
-
-sealed class SizePreferences {
-    object FixedToWidth: SizePreferences()
-    data class SpecificSize(val stepSize: Dp): SizePreferences()
-}

@@ -260,19 +260,17 @@ class MainActivity : ComponentActivity() {
 //                                    Point(1f, 2f),
 //                                    Point(2f, 5f),
 //                                    Point(3f, 5f),
-//                                    Point(0f, 10f),
-//                                    Point(0f, 10f),
-//                                    Point(0f, 11f),
+//                                    Point(4f, 10f),
+//                                    Point(5f, 10f),
+//                                    Point(6f, 11f),
 //                                )
 //                            )
 //                        )
 
                         val points = listOf(
-                            Point(1f, 2f),
-                            Point(3f, 4f),
-                            Point(9f, 2f),
-                            Point(10f, 7f),
-                            Point(15f, 4f)
+                            Point(0f, 2f),
+                            Point(1f, 3f),
+                            Point(2f, 4f),
                         )
 
                         val max = points.maxOf { it.y }
@@ -288,15 +286,7 @@ class MainActivity : ComponentActivity() {
                                 (min + diffPerValue * position).toString()
                             }.build()
 
-                        LineChart(
-                            modifier = Modifier
-                                .background(Color.White)
-                                .padding(10.dp)
-                                .height(200.dp),
-                            lines = LineModel(
-                                points = points
-                            )
-                        )
+
 
 
                         val listOfData2 =
@@ -347,19 +337,14 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                        DonutChart(
+                        LineChart(
                             modifier = Modifier
                                 .background(Color.White)
                                 .padding(10.dp)
                                 .height(200.dp),
-                            segments = pieDataList,
-                            onSegmentSelected = { itemId ->
-                                val element = pieDataList.find { it.id == itemId }
-                                val index = pieDataList.indexOf(element)
-
-                                pieDataList[index] =
-                                    pieDataList[index].copy(isSelected = !pieDataList[index].isSelected)
-                            }
+                            lines = LineModel(
+                                points = points
+                            )
                         )
                     }
                 }

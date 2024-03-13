@@ -7,11 +7,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.chartslib.charts.line.models.SizePreferences
 
 const val UNSPECIFIED_HEIGHT = Float.MIN_VALUE
 const val UNSPECIFIED_WIDTH = Float.MAX_VALUE
 
+const val UNSPECIFIED_POSITION = Float.MIN_VALUE
 /**
  * [CartesianSystemPreferences] prefs cartesian system drawing.
  *
@@ -36,6 +36,11 @@ data class CartesianSystemPreferences(
     val sizePreferences: SizePreferences = SizePreferences.FixedToWidth
 )
 
+sealed class SizePreferences {
+    object FixedToWidth: SizePreferences()
+    data class SpecificSize(val contentSize: Dp): SizePreferences()
+}
+
 /**
  * [HorizontalLine]  horizontal line configurations.
  *
@@ -56,6 +61,7 @@ data class HorizontalLine(
 ) {
     class Builder {
         private var steps: Int = 0
+        private var specificLines: MutableList<HorizontalLine> = mutableListOf()
         private var labels: (Int) -> String = { it.toString() }
         private var visibleLines: (Int) -> Boolean = { true }
         private var lineStyles: (Int) -> LineStyle = { LineStyle.DashedLine() }
@@ -65,6 +71,10 @@ data class HorizontalLine(
 
         fun setSteps(steps: Int) = apply {
             this.steps = steps
+        }
+
+        fun setSpecificLines(lines: List<HorizontalLine>) = apply {
+            this.specificLines.addAll(lines)
         }
 
         fun setLabels(labels: (Int) -> String) = apply {
@@ -96,7 +106,7 @@ data class HorizontalLine(
             for (i in 0..steps - 1) {
                 lines.add(
                     HorizontalLine(
-                        label = labels.invoke(i),
+                        label = "",
                         isLineVisible = visibleLines.invoke(i),
                         lineStyle = lineStyles.invoke(i),
                         lineThickness = linesThickness.invoke(i),
@@ -105,6 +115,7 @@ data class HorizontalLine(
                     )
                 )
             }
+            lines.addAll(specificLines)
             return lines
         }
     }
@@ -127,10 +138,12 @@ data class VerticalLine(
     val lineThickness: Dp = 1.dp,
     val labelAlignment: VerticalLineAlignment = VerticalLineAlignment.CENTERED,
     val label: String = "",
-    val lineStyle: LineStyle = LineStyle.DashedLine()
+    val lineStyle: LineStyle = LineStyle.DashedLine(),
+    val position: Float = UNSPECIFIED_POSITION
 ) {
     class Builder {
         private var steps: Int = 0
+        private var specificLines: MutableList<VerticalLine> = mutableListOf()
         private var labels: (Int) -> String = { it.toString() }
 
         fun setSteps(steps: Int) = apply {
@@ -141,12 +154,16 @@ data class VerticalLine(
             this.labels = labels
         }
 
+        fun setSpecificLines(lines: List<VerticalLine>) = apply {
+            this.specificLines.addAll(lines)
+        }
 
         fun build(): List<VerticalLine> {
             val lines = mutableListOf<VerticalLine>()
             for (i in 0..steps - 1) {
                 lines.add(VerticalLine(label = labels.invoke(i)))
             }
+            lines.addAll(specificLines)
             return lines
         }
     }
@@ -185,7 +202,7 @@ data class LabelSizePreferences(
     val maxLines: Int = 1,
     val maxWidth: Dp = UNSPECIFIED_WIDTH.dp,
     val maxHeight: Dp = UNSPECIFIED_HEIGHT.dp,
-    val labelAndChartPadding: Dp = 10.dp,
+    val labelAndChartPadding: Dp = 0.dp,
 )
 
 data class Padding(

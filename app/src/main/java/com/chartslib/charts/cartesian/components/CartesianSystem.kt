@@ -1,5 +1,6 @@
 package com.chartslib.charts.cartesian.components
 
+import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,7 +18,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.chartslib.charts.line.models.SizePreferences
 import kotlin.math.floor
 
 /**
@@ -119,13 +119,12 @@ fun CartesianSystem(
             val width =
                 when (cartesianSysPrefs.sizePreferences) {
                     is SizePreferences.FixedToWidth -> size.width - startExtraLabelSpace - cartesianSysPrefs.verticalLabelsPreferences.labelAndChartPadding.toPx() - endExtraLabels
-                    is SizePreferences.SpecificSize -> if ((cartesianSysPrefs.sizePreferences.stepSize.toPx() * verticalLines.size) < size.width - startExtraLabelSpace - cartesianSysPrefs.verticalLabelsPreferences.labelAndChartPadding.toPx() - endExtraLabels)
+                    is SizePreferences.SpecificSize -> if ((cartesianSysPrefs.sizePreferences.contentSize.toPx()) < size.width - startExtraLabelSpace - cartesianSysPrefs.verticalLabelsPreferences.labelAndChartPadding.toPx() - endExtraLabels)
                         size.width - startExtraLabelSpace - cartesianSysPrefs.verticalLabelsPreferences.labelAndChartPadding.toPx() - endExtraLabels
-                    else cartesianSysPrefs.sizePreferences.stepSize.toPx() * verticalLines.size
+                    else cartesianSysPrefs.sizePreferences.contentSize.toPx()
                 }
 
-            val height =
-                size.height - topExtraLabelSpace - bottomExtraLabelSpace - cartesianSysPrefs.horizontalLabelsPreferences.labelAndChartPadding.toPx()
+            val height = size.height - topExtraLabelSpace - bottomExtraLabelSpace - cartesianSysPrefs.horizontalLabelsPreferences.labelAndChartPadding.toPx()
 
             val sumOfLinesThicknessH =
                 getSumOfLinesThickness(this, horizontalLines.map { it.lineThickness })
@@ -141,14 +140,17 @@ fun CartesianSystem(
                 (width - sumOfLinesThicknessV - cartesianSysPrefs.verticalExtraPadding.start.toPx() - cartesianSysPrefs.verticalExtraPadding.end.toPx()) / (verticalLines.size - 1)
 
 
-            val contentTopAndBottom = drawHorizontalLines(
+            val horizontalLineStartY = topExtraLabelSpace + cartesianSysPrefs.horizontalExtraPadding.top.toPx()
+            val horizontalLinesHeight =  (height - sumOfLinesThicknessH - cartesianSysPrefs.horizontalExtraPadding.top.toPx() - cartesianSysPrefs.horizontalExtraPadding.bottom.toPx()) + sumOfLinesThicknessH
+
+            drawHorizontalLines(
                 lines = horizontalLines,
                 startOffset = Offset(
                     startExtraLabelSpace.toFloat() + cartesianSysPrefs.verticalLabelsPreferences.labelAndChartPadding.toPx() +  cartesianSysPrefs.horizontalExtraPadding.start.toPx(),
-                    topExtraLabelSpace + cartesianSysPrefs.horizontalExtraPadding.top.toPx()
+                    horizontalLineStartY
                 ),
                 drawScope = this,
-                width = width -  cartesianSysPrefs.horizontalExtraPadding.start.toPx() -  cartesianSysPrefs.horizontalExtraPadding.end.toPx(),
+                width = width,
                 step = stepH
             )
 
@@ -168,21 +170,25 @@ fun CartesianSystem(
                 step = stepV
             )
 
-            val contentStartAndEnd = drawVerticalLines(
+            val verticalLinesStartX = startExtraLabelSpace.toFloat() + cartesianSysPrefs.verticalLabelsPreferences.labelAndChartPadding.toPx() + cartesianSysPrefs.verticalExtraPadding.start.toPx()
+            val verticalLinesHeight = height - cartesianSysPrefs.verticalExtraPadding.top.toPx() - cartesianSysPrefs.verticalExtraPadding.bottom.toPx()
+            val verticalLinesWidth = (width - sumOfLinesThicknessV - cartesianSysPrefs.verticalExtraPadding.start.toPx() - cartesianSysPrefs.verticalExtraPadding.end.toPx()) + sumOfLinesThicknessV
+
+            drawVerticalLines(
                 lines = verticalLines,
-                startOffset = Offset(startExtraLabelSpace.toFloat() + cartesianSysPrefs.verticalLabelsPreferences.labelAndChartPadding.toPx() + cartesianSysPrefs.verticalExtraPadding.start.toPx(), topExtraLabelSpace + cartesianSysPrefs.verticalExtraPadding.top.toPx()),
+                startOffset = Offset(verticalLinesStartX, topExtraLabelSpace + cartesianSysPrefs.verticalExtraPadding.top.toPx()),
                 drawScope = this,
-                height = height - cartesianSysPrefs.verticalExtraPadding.top.toPx() - cartesianSysPrefs.verticalExtraPadding.bottom.toPx(),
+                height = verticalLinesHeight,
                 step = stepV
             )
 
+            Log.d("TAGHEIGHT", verticalLinesStartX.toString())
             content.invoke(
-                Offset(contentStartAndEnd.first, contentTopAndBottom.first),
-                contentStartAndEnd.second - contentStartAndEnd.first,
-                contentTopAndBottom.second - contentTopAndBottom.first,
+                Offset(verticalLinesStartX, horizontalLineStartY),
+                verticalLinesWidth,
+                horizontalLinesHeight,
                 this
             )
-
         }
     }
 }
@@ -267,14 +273,11 @@ private fun drawHorizontalLines(
     drawScope: DrawScope,
     width: Float,
     step: Float
-): Pair<Float, Float> {
-    var yContentTop = 0f
-    var yContentBottom = 0f
+) {
 
     drawScope.run {
         var horizontalLineYStart = startOffset.y
         val lineX = startOffset.x
-        yContentTop = horizontalLineYStart
 
         for (line in lines) {
             if (line.isLineVisible) {
@@ -317,11 +320,9 @@ private fun drawHorizontalLines(
                 }
             }
 
-            yContentBottom = horizontalLineYStart
             horizontalLineYStart += step + line.lineThickness.toPx()
         }
     }
-    return Pair(yContentTop, yContentBottom)
 }
 
 private fun drawHorizontalLabels(
@@ -370,24 +371,17 @@ private fun drawVerticalLines(
     drawScope: DrawScope,
     height: Float,
     step: Float
-): Pair<Float, Float> {
-    var xContentStart = 0f
-    var xContentEnd = 0f
-
+) {
     drawScope.run {
         var verticalLineXStart = startOffset.x
-        xContentStart = verticalLineXStart
 
         for (line in lines) {
             if (line.isLineVisible)
                 if (line.lineStyle is LineStyle.StrokeLine)
                     drawRect(
-                        topLeft = Offset(verticalLineXStart, startOffset.y),
+                        topLeft = Offset(if(line.position != UNSPECIFIED_POSITION) startOffset.x + line.position else verticalLineXStart, startOffset.y),
                         brush = line.lineBrush,
-                        size = Size(
-                            line.lineThickness.toPx(),
-                            height
-                        )
+                        size = Size(line.lineThickness.toPx(), height)
                     )
                 else if (line.lineStyle is LineStyle.DashedLine) {
                     val dashLength = line.lineStyle.dashLength.toPx()
@@ -401,7 +395,7 @@ private fun drawVerticalLines(
                     for (i in 0..<countOfDashes) {
                         drawRect(
                             topLeft = Offset(
-                                verticalLineXStart,
+                                if(line.position != UNSPECIFIED_POSITION) startOffset.x + line.position else verticalLineXStart,
                                 yPosition
                             ),
                             brush = line.lineBrush,
@@ -415,11 +409,9 @@ private fun drawVerticalLines(
                     }
                 }
 
-            xContentEnd = verticalLineXStart
             verticalLineXStart += step + line.lineThickness.toPx()
         }
     }
-    return Pair(xContentStart, xContentEnd)
 }
 
 /**
