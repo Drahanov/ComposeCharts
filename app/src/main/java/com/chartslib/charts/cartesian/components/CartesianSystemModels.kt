@@ -139,7 +139,7 @@ data class VerticalLine(
     val labelAlignment: VerticalLineAlignment = VerticalLineAlignment.CENTERED,
     val label: String = "",
     val lineStyle: LineStyle = LineStyle.DashedLine(),
-    val position: Float = UNSPECIFIED_POSITION
+    val positionInPercentage: Float = UNSPECIFIED_POSITION
 ) {
     class Builder {
         private var steps: Int = 0

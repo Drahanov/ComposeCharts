@@ -61,7 +61,8 @@ fun CartesianSystem(
              * and if this number is greater than the largest vertically, then this will be the start space,
              * cos it will extend to the left by its full length if it is [VerticalLineAlignment.BEFORE_LINE] and by half if it is [VerticalLineAlignment.CENTERED].
              */
-            var startExtraLabelSpace = if (measuredVerticalLabels.isNotEmpty()) measuredVerticalLabels.maxBy { it.value.size.width }.value.size.width else 0
+            var startExtraLabelSpace =
+                if (measuredVerticalLabels.isNotEmpty()) measuredVerticalLabels.maxBy { it.value.size.width }.value.size.width else 0
             if (verticalLines[0].labelAlignment == VerticalLineAlignment.CENTERED) {
                 if (measuredHorizontalLabels[0]!!.size.width / 2 > startExtraLabelSpace) {
                     startExtraLabelSpace = measuredHorizontalLabels[0]!!.size.width / 2
@@ -81,6 +82,7 @@ fun CartesianSystem(
                     HorizontalLineAlignment.CENTERED -> {
                         measuredVerticalLabels[0]!!.size.height.toFloat() / 2
                     }
+
                     else -> {
                         0f
                     }
@@ -124,29 +126,35 @@ fun CartesianSystem(
                     else cartesianSysPrefs.sizePreferences.contentSize.toPx()
                 }
 
-            val height = size.height - topExtraLabelSpace - bottomExtraLabelSpace - cartesianSysPrefs.horizontalLabelsPreferences.labelAndChartPadding.toPx()
+            val height =
+                size.height - topExtraLabelSpace - bottomExtraLabelSpace - cartesianSysPrefs.horizontalLabelsPreferences.labelAndChartPadding.toPx()
 
             val sumOfLinesThicknessH =
                 getSumOfLinesThickness(this, horizontalLines.map { it.lineThickness })
 
             val sumOfLinesThicknessV =
-                getSumOfLinesThickness(this, verticalLines.map { it.lineThickness })
+                getSumOfLinesThickness(
+                    this,
+                    verticalLines.filter { it.positionInPercentage == UNSPECIFIED_POSITION }
+                        .map { it.lineThickness })
 
 
             val stepH =
                 (height - sumOfLinesThicknessH - cartesianSysPrefs.horizontalExtraPadding.top.toPx() - cartesianSysPrefs.horizontalExtraPadding.bottom.toPx()) / (horizontalLines.size - 1)
 
             val stepV =
-                (width - sumOfLinesThicknessV - cartesianSysPrefs.verticalExtraPadding.start.toPx() - cartesianSysPrefs.verticalExtraPadding.end.toPx()) / (verticalLines.size - 1)
+                (width - sumOfLinesThicknessV - cartesianSysPrefs.verticalExtraPadding.start.toPx() - cartesianSysPrefs.verticalExtraPadding.end.toPx()) / (verticalLines.filter { it.positionInPercentage == UNSPECIFIED_POSITION }.size - 1)
 
 
-            val horizontalLineStartY = topExtraLabelSpace + cartesianSysPrefs.horizontalExtraPadding.top.toPx()
-            val horizontalLinesHeight =  (height - sumOfLinesThicknessH - cartesianSysPrefs.horizontalExtraPadding.top.toPx() - cartesianSysPrefs.horizontalExtraPadding.bottom.toPx()) + sumOfLinesThicknessH
+            val horizontalLineStartY =
+                topExtraLabelSpace + cartesianSysPrefs.horizontalExtraPadding.top.toPx()
+            val horizontalLinesHeight =
+                (height - sumOfLinesThicknessH - cartesianSysPrefs.horizontalExtraPadding.top.toPx() - cartesianSysPrefs.horizontalExtraPadding.bottom.toPx()) + sumOfLinesThicknessH
 
             drawHorizontalLines(
                 lines = horizontalLines,
                 startOffset = Offset(
-                    startExtraLabelSpace.toFloat() + cartesianSysPrefs.verticalLabelsPreferences.labelAndChartPadding.toPx() +  cartesianSysPrefs.horizontalExtraPadding.start.toPx(),
+                    startExtraLabelSpace.toFloat() + cartesianSysPrefs.verticalLabelsPreferences.labelAndChartPadding.toPx() + cartesianSysPrefs.horizontalExtraPadding.start.toPx(),
                     horizontalLineStartY
                 ),
                 drawScope = this,
@@ -156,7 +164,10 @@ fun CartesianSystem(
 
             drawVerticalLabels(
                 lines = horizontalLines,
-                startOffset = Offset(0f, topExtraLabelSpace + cartesianSysPrefs.horizontalExtraPadding.top.toPx()),
+                startOffset = Offset(
+                    0f,
+                    topExtraLabelSpace + cartesianSysPrefs.horizontalExtraPadding.top.toPx()
+                ),
                 drawScope = this,
                 measuredTexts = measuredVerticalLabels,
                 step = stepH
@@ -164,22 +175,32 @@ fun CartesianSystem(
 
             drawHorizontalLabels(
                 lines = verticalLines,
-                startOffset = Offset(startExtraLabelSpace.toFloat() + cartesianSysPrefs.verticalLabelsPreferences.labelAndChartPadding.toPx() + cartesianSysPrefs.verticalExtraPadding.start.toPx(), height + cartesianSysPrefs.horizontalLabelsPreferences.labelAndChartPadding.toPx()),
+                startOffset = Offset(
+                    startExtraLabelSpace.toFloat() + cartesianSysPrefs.verticalLabelsPreferences.labelAndChartPadding.toPx() + cartesianSysPrefs.verticalExtraPadding.start.toPx(),
+                    height + cartesianSysPrefs.horizontalLabelsPreferences.labelAndChartPadding.toPx()
+                ),
                 drawScope = this,
                 measuredTexts = measuredHorizontalLabels,
                 step = stepV
             )
 
-            val verticalLinesStartX = startExtraLabelSpace.toFloat() + cartesianSysPrefs.verticalLabelsPreferences.labelAndChartPadding.toPx() + cartesianSysPrefs.verticalExtraPadding.start.toPx()
-            val verticalLinesHeight = height - cartesianSysPrefs.verticalExtraPadding.top.toPx() - cartesianSysPrefs.verticalExtraPadding.bottom.toPx()
-            val verticalLinesWidth = (width - sumOfLinesThicknessV - cartesianSysPrefs.verticalExtraPadding.start.toPx() - cartesianSysPrefs.verticalExtraPadding.end.toPx()) + sumOfLinesThicknessV
+            val verticalLinesStartX =
+                startExtraLabelSpace.toFloat() + cartesianSysPrefs.verticalLabelsPreferences.labelAndChartPadding.toPx() + cartesianSysPrefs.verticalExtraPadding.start.toPx()
+            val verticalLinesHeight =
+                height - cartesianSysPrefs.verticalExtraPadding.top.toPx() - cartesianSysPrefs.verticalExtraPadding.bottom.toPx()
+            val verticalLinesWidth =
+                (width - sumOfLinesThicknessV - cartesianSysPrefs.verticalExtraPadding.start.toPx() - cartesianSysPrefs.verticalExtraPadding.end.toPx()) + sumOfLinesThicknessV
 
             drawVerticalLines(
                 lines = verticalLines,
-                startOffset = Offset(verticalLinesStartX, topExtraLabelSpace + cartesianSysPrefs.verticalExtraPadding.top.toPx()),
+                startOffset = Offset(
+                    verticalLinesStartX,
+                    topExtraLabelSpace + cartesianSysPrefs.verticalExtraPadding.top.toPx()
+                ),
                 drawScope = this,
                 height = verticalLinesHeight,
-                step = stepV
+                step = stepV,
+                width = verticalLinesWidth
             )
 
             Log.d("TAGHEIGHT", verticalLinesStartX.toString())
@@ -370,16 +391,23 @@ private fun drawVerticalLines(
     startOffset: Offset,
     drawScope: DrawScope,
     height: Float,
+    width: Float,
     step: Float
 ) {
     drawScope.run {
         var verticalLineXStart = startOffset.x
+        Log.d("Hello", width.toString())
 
         for (line in lines) {
+            Log.d("Hello", ((width / 100) * line.positionInPercentage).toString())
+
             if (line.isLineVisible)
                 if (line.lineStyle is LineStyle.StrokeLine)
                     drawRect(
-                        topLeft = Offset(if(line.position != UNSPECIFIED_POSITION) startOffset.x + line.position else verticalLineXStart, startOffset.y),
+                        topLeft = Offset(
+                            if (line.positionInPercentage != UNSPECIFIED_POSITION) startOffset.x + (width / 100) * line.positionInPercentage else verticalLineXStart,
+                            startOffset.y
+                        ),
                         brush = line.lineBrush,
                         size = Size(line.lineThickness.toPx(), height)
                     )
@@ -395,7 +423,7 @@ private fun drawVerticalLines(
                     for (i in 0..<countOfDashes) {
                         drawRect(
                             topLeft = Offset(
-                                if(line.position != UNSPECIFIED_POSITION) startOffset.x + line.position else verticalLineXStart,
+                                if (line.positionInPercentage != UNSPECIFIED_POSITION) startOffset.x + (width / 100) * line.positionInPercentage else verticalLineXStart,
                                 yPosition
                             ),
                             brush = line.lineBrush,
