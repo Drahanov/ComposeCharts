@@ -270,10 +270,10 @@ class MainActivity : ComponentActivity() {
                         val points = listOf(
                             Point(0f, 2f),
                             Point(1f, 3f),
-                            Point(2f, 4f),
+                            Point(2f, 2f),
+                            Point(3f, 3f),
                             Point(4f, 2f),
-                            Point(10f, 5f),
-                            Point(15f, 3f),
+                            Point(5f, 3f),
                         )
 
                         val max = points.maxOf { it.y }

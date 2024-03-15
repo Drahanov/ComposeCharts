@@ -204,9 +204,12 @@ fun CartesianSystem(
             )
 
             Log.d("TAGHEIGHT", verticalLinesStartX.toString())
+            val firstVerticalLineThickness = verticalLines.filter { it.positionInPercentage == UNSPECIFIED_POSITION }.first().lineThickness
+            val lastVerticalLineThickness = verticalLines.filter { it.positionInPercentage == UNSPECIFIED_POSITION }.last().lineThickness
+
             content.invoke(
-                Offset(verticalLinesStartX, horizontalLineStartY),
-                verticalLinesWidth,
+                Offset(verticalLinesStartX + firstVerticalLineThickness.toPx(), horizontalLineStartY),
+                verticalLinesWidth - firstVerticalLineThickness.toPx() - lastVerticalLineThickness.toPx(),
                 horizontalLinesHeight,
                 this
             )
@@ -396,10 +399,8 @@ private fun drawVerticalLines(
 ) {
     drawScope.run {
         var verticalLineXStart = startOffset.x
-        Log.d("Hello", width.toString())
 
         for (line in lines) {
-            Log.d("Hello", ((width / 100) * line.positionInPercentage).toString())
 
             if (line.isLineVisible)
                 if (line.lineStyle is LineStyle.StrokeLine)
@@ -421,6 +422,9 @@ private fun drawVerticalLines(
 
                     var yPosition = startOffset.y
                     for (i in 0..<countOfDashes) {
+                        if (line.positionInPercentage != UNSPECIFIED_POSITION)
+                            Log.d("TESTDATA", "cart width" + width.toString())
+
                         drawRect(
                             topLeft = Offset(
                                 if (line.positionInPercentage != UNSPECIFIED_POSITION) startOffset.x + (width / 100) * line.positionInPercentage else verticalLineXStart,

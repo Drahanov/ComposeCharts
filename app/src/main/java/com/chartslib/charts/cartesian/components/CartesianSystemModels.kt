@@ -142,27 +142,30 @@ data class VerticalLine(
     val positionInPercentage: Float = UNSPECIFIED_POSITION
 ) {
     class Builder {
-        private var steps: Int = 0
+        private var unspecifiedLinesAmount: Int = 0
         private var specificLines: MutableList<VerticalLine> = mutableListOf()
         private var labels: (Int) -> String = { it.toString() }
 
-        fun setSteps(steps: Int) = apply {
-            this.steps = steps
+        fun setUnspecifiedLinesAmount(steps: Int) = apply {
+            this.unspecifiedLinesAmount = steps
+        }
+
+        fun setSpecifiedLinesAmount(amount: Int, lines: (Int) -> VerticalLine) = apply {
+            for (i in 0..<amount) {
+                specificLines.add(lines.invoke(i))
+            }
         }
 
         fun setLabels(labels: (Int) -> String) = apply {
             this.labels = labels
         }
 
-        fun setSpecificLines(lines: List<VerticalLine>) = apply {
-            this.specificLines.addAll(lines)
-        }
-
         fun build(): List<VerticalLine> {
             val lines = mutableListOf<VerticalLine>()
-            for (i in 0..steps - 1) {
+            for (i in 0..<unspecifiedLinesAmount) {
                 lines.add(VerticalLine(label = labels.invoke(i)))
             }
+
             lines.addAll(specificLines)
             return lines
         }

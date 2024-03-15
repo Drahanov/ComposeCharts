@@ -1,5 +1,6 @@
 package com.chartslib.charts.line.components
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -26,34 +27,29 @@ fun LineChart(
     modifier: Modifier,
     lines: LineModel,
     lineChartSizePreferences: LineChartWidth = LineChartWidth.MatchParent,
+    cartesianSystemPreferences: CartesianSystemPreferences = CartesianSystemPreferences(
+        horizontalLines = HorizontalLine.Builder().setSteps(3).build(),
+        verticalLines = VerticalLine.Builder().setUnspecifiedLinesAmount(2)
+            .setSpecifiedLinesAmount(lines.points.size) { index ->
+                if (index != lines.points.lastIndex)
+                    VerticalLine(positionInPercentage = (lines.points[index].x / lines.points.maxOf { it.x }) * 100)
+                else VerticalLine(isLineVisible = false)
+            }
+            .setLabels { it.toString() }.build(),
+        sizePreferences = if (lineChartSizePreferences is LineChartWidth.DpPerValue) {
+            SizePreferences.SpecificSize((lines.points.maxOf { it.x } * lineChartSizePreferences.dp.value).dp)
+        } else SizePreferences.FixedToWidth
+    ),
     dotRadius: Dp = 0.dp,
 ) {
-    val max = lines.points.maxOf { it.x }
-    val specificLines = mutableListOf<VerticalLine>()
-    for (line in 1..lines.points.size - 2) {
-        val percent = (lines.points[line].x / max) * 100
-        specificLines.add(VerticalLine(positionInPercentage = percent))
-    }
-
-    val cartesianSystemPreferences = CartesianSystemPreferences(
-        horizontalLines = HorizontalLine.Builder().setSteps(3).build(),
-        verticalLines = VerticalLine.Builder().setSteps(2)
-            .setSpecificLines(specificLines)
-            .setLabels { it.toString() }.build(),
-        sizePreferences =
-        if (lineChartSizePreferences is LineChartWidth.DpPerValue) {
-            SizePreferences.SpecificSize((lines.points.maxOf { it.x } * lineChartSizePreferences.dp.value).dp)
-        }
-
-        else SizePreferences.FixedToWidth
-    )
-
     Box(modifier = modifier) {
         CartesianSystem(
             modifier = Modifier
                 .fillMaxSize(),
             cartesianSysPrefs = cartesianSystemPreferences,
         ) { start, width, height, drawScope ->
+            Log.d("TESTDATA", width.toString())
+
             val xPointsMax = lines.points.maxOf { it.x }
             val yPointsMax = lines.points.maxOf { it.y }
 
@@ -78,10 +74,12 @@ fun LineChart(
                     val nextLineVerticalPosition =
                         height - ((nextYValue - yPointsMin) * heightPerValue) + start.y
 
+                    Log.d("TESTDATA", "line x" + currentX.toString())
+
                     drawLine(
                         brush = SolidColor(Azure),
-                        start = Offset(currentX, currentLineVerticalPosition),
-                        end = Offset(currentX + toDraw, nextLineVerticalPosition),
+                        start = Offset(currentX , currentLineVerticalPosition),
+                        end = Offset(currentX + toDraw , nextLineVerticalPosition),
                         strokeWidth = 4f
                     )
 
