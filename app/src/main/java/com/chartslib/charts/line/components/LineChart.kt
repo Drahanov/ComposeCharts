@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -29,11 +30,9 @@ fun LineChart(
     lineChartSizePreferences: LineChartWidth = LineChartWidth.MatchParent,
     cartesianSystemPreferences: CartesianSystemPreferences = CartesianSystemPreferences(
         horizontalLines = HorizontalLine.Builder().setSteps(3).build(),
-        verticalLines = VerticalLine.Builder().setUnspecifiedLinesAmount(2)
+        verticalLines = VerticalLine.Builder().setUnspecifiedLinesAmount(3)
             .setSpecifiedLinesAmount(lines.points.size) { index ->
-                if (index != lines.points.lastIndex)
-                    VerticalLine(positionInPercentage = (lines.points[index].x / lines.points.maxOf { it.x }) * 100)
-                else VerticalLine(isLineVisible = false)
+                    VerticalLine(lineBrush = SolidColor(Color.Red), positionInPercentage = (lines.points[index].x / lines.points.maxOf { it.x }) * 100)
             }
             .setLabels { it.toString() }.build(),
         sizePreferences = if (lineChartSizePreferences is LineChartWidth.DpPerValue) {

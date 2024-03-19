@@ -208,8 +208,8 @@ fun CartesianSystem(
             val lastVerticalLineThickness = verticalLines.filter { it.positionInPercentage == UNSPECIFIED_POSITION }.last().lineThickness
 
             content.invoke(
-                Offset(verticalLinesStartX + firstVerticalLineThickness.toPx(), horizontalLineStartY),
-                verticalLinesWidth - firstVerticalLineThickness.toPx() - lastVerticalLineThickness.toPx(),
+                Offset(verticalLinesStartX, horizontalLineStartY),
+                verticalLinesWidth,
                 horizontalLinesHeight,
                 this
             )
@@ -406,7 +406,7 @@ private fun drawVerticalLines(
                 if (line.lineStyle is LineStyle.StrokeLine)
                     drawRect(
                         topLeft = Offset(
-                            if (line.positionInPercentage != UNSPECIFIED_POSITION) startOffset.x + (width / 100) * line.positionInPercentage else verticalLineXStart,
+                            if (line.positionInPercentage != UNSPECIFIED_POSITION) startOffset.x + (width / 100) * line.positionInPercentage - line.lineThickness.toPx() / 2 else verticalLineXStart,
                             startOffset.y
                         ),
                         brush = line.lineBrush,
@@ -427,7 +427,7 @@ private fun drawVerticalLines(
 
                         drawRect(
                             topLeft = Offset(
-                                if (line.positionInPercentage != UNSPECIFIED_POSITION) startOffset.x + (width / 100) * line.positionInPercentage else verticalLineXStart,
+                                if (line.positionInPercentage != UNSPECIFIED_POSITION) startOffset.x + (width / 100) * line.positionInPercentage- line.lineThickness.toPx() / 2 else verticalLineXStart,
                                 yPosition
                             ),
                             brush = line.lineBrush,
