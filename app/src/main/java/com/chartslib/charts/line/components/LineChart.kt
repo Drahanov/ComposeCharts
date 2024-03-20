@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -26,13 +27,18 @@ sealed class LineChartWidth {
 @Composable
 fun LineChart(
     modifier: Modifier,
-    lines: LineModel,
+    lines: List<LineModel>,
     lineChartSizePreferences: LineChartWidth = LineChartWidth.MatchParent,
     cartesianSystemPreferences: CartesianSystemPreferences = CartesianSystemPreferences(
         horizontalLines = HorizontalLine.Builder().setSteps(3).build(),
         verticalLines = VerticalLine.Builder().setUnspecifiedLinesAmount(3)
-            .setSpecifiedLinesAmount(lines.points.size) { index ->
-                    VerticalLine(lineBrush = SolidColor(Color.Red), positionInPercentage = (lines.points[index].x / lines.points.maxOf { it.x }) * 100)
+            .setSpecifiedLinesAmount(lines.sumOf { it.points.size }) { index ->
+                val map = lines.map { it.points }
+
+                VerticalLine(
+                    lineBrush = SolidColor(Color.Red),
+                    positionInPercentage = (lines.points[index].x / lines.points.maxOf { it.x }) * 100
+                )
             }
             .setLabels { it.toString() }.build(),
         sizePreferences = if (lineChartSizePreferences is LineChartWidth.DpPerValue) {
@@ -41,14 +47,15 @@ fun LineChart(
     ),
     dotRadius: Dp = 0.dp,
 ) {
-    Box(modifier = modifier) {
+    Box(modifier = modifier.clipToBounds()) {
         CartesianSystem(
             modifier = Modifier
                 .fillMaxSize(),
             cartesianSysPrefs = cartesianSystemPreferences,
         ) { start, width, height, drawScope ->
-            Log.d("TESTDATA", width.toString())
+            for (line in lines) {
 
+            }
             val xPointsMax = lines.points.maxOf { it.x }
             val yPointsMax = lines.points.maxOf { it.y }
 
@@ -60,29 +67,27 @@ fun LineChart(
             var currentX = start.x
 
             drawScope.run {
-                for (line in lines.points.indices) {
-                    if (line == lines.points.size - 1) break
+                for (index in lines.points.indices) {
+                    if (index == lines.points.size - 1) break
 
-                    val nextValue = lines.points[line + 1].x - lines.points[line].x
+                    val nextValue = lines.points[index + 1].x - lines.points[index].x
                     val toDraw = nextValue * widthPerValue
 
-                    val nextYValue = lines.points[line + 1].y
+                    val nextYValue = lines.points[index + 1].y
 
                     val currentLineVerticalPosition =
-                        height - ((lines.points[line].y - yPointsMin) * heightPerValue) + start.y
+                        height - ((lines.points[index].y - yPointsMin) * heightPerValue) + start.y
                     val nextLineVerticalPosition =
                         height - ((nextYValue - yPointsMin) * heightPerValue) + start.y
 
-                    Log.d("TESTDATA", "line x" + currentX.toString())
-
                     drawLine(
                         brush = SolidColor(Azure),
-                        start = Offset(currentX , currentLineVerticalPosition),
-                        end = Offset(currentX + toDraw , nextLineVerticalPosition),
+                        start = Offset(currentX, currentLineVerticalPosition),
+                        end = Offset(currentX + toDraw, nextLineVerticalPosition),
                         strokeWidth = 4f
                     )
 
-                    if (line == 0)
+                    if (index == 0)
                         drawCircle(
                             brush = SolidColor(Azure),
                             center = Offset(currentX, currentLineVerticalPosition),

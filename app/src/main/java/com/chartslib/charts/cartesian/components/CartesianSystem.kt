@@ -120,7 +120,7 @@ fun CartesianSystem(
 
             val width =
                 when (cartesianSysPrefs.sizePreferences) {
-                    is SizePreferences.FixedToWidth -> size.width - startExtraLabelSpace - cartesianSysPrefs.verticalLabelsPreferences.labelAndChartPadding.toPx() - endExtraLabels
+                    is SizePreferences.FixedToWidth -> size.width - startExtraLabelSpace - cartesianSysPrefs.verticalLabelsPreferences.labelAndChartPadding.toPx() - endExtraLabels - 0.5.dp.toPx()
                     is SizePreferences.SpecificSize -> if ((cartesianSysPrefs.sizePreferences.contentSize.toPx()) < size.width - startExtraLabelSpace - cartesianSysPrefs.verticalLabelsPreferences.labelAndChartPadding.toPx() - endExtraLabels)
                         size.width - startExtraLabelSpace - cartesianSysPrefs.verticalLabelsPreferences.labelAndChartPadding.toPx() - endExtraLabels
                     else cartesianSysPrefs.sizePreferences.contentSize.toPx()
