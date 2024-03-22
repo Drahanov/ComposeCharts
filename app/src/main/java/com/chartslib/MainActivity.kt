@@ -290,8 +290,6 @@ class MainActivity : ComponentActivity() {
                             }.build()
 
 
-
-
                         val listOfData2 =
                             rememberMutableStateListOf(
                                 DonutSegmentModel(
@@ -340,13 +338,25 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
+                        val points2 = listOf(
+                            Point(2f, 3f),
+                            Point(3f, 2f),
+                            Point(4f, 3f),
+                            Point(5f, 2f),
+                            Point(6f, 2f),
+                        )
                         LineChart(
                             modifier = Modifier
                                 .background(Color.White)
                                 .padding(10.dp)
                                 .height(200.dp),
-                            lines = LineModel(
-                                points = points
+                            lines = listOf(
+                                LineModel(
+                                    points = points
+                                ), LineModel(
+                                    color = Color.Red,
+                                    points = points2
+                                )
                             )
                         )
                     }
