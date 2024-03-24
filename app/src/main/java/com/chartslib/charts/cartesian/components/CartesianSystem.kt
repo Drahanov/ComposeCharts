@@ -2,13 +2,20 @@ package com.chartslib.charts.cartesian.components
 
 import android.util.Log
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.clipRect
+import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextMeasurer
@@ -36,7 +43,36 @@ fun CartesianSystem(
 ) {
     Box(modifier = modifier) {
         val textMeasurer = rememberTextMeasurer()
-        Canvas(modifier = Modifier.fillMaxSize()) {
+        val chartWidth = remember {
+            mutableStateOf(0f)
+        }
+        val position = remember {
+            mutableStateOf(0f)
+        }
+
+        Canvas(modifier = Modifier
+            .fillMaxSize()
+            .clipToBounds()
+            .pointerInput(true) {
+                detectHorizontalDragGestures { change, dragAmount ->
+                    val maxPosition = (chartWidth.value - size.width) * (-1)
+                    if (dragAmount < 0) {
+                        if (position.value > maxPosition) {
+                            var positionAfterAdd = position.value + dragAmount * 1.5f
+                            if (positionAfterAdd < maxPosition) {
+                                positionAfterAdd = maxPosition
+                            }
+                            position.value = positionAfterAdd
+                        }
+                    } else if (position.value < 0f) {
+                        var positionAfterAdd = position.value + dragAmount * 1.5f
+                        if (positionAfterAdd > 0f) {
+                            positionAfterAdd = 0f
+                        }
+                        position.value = positionAfterAdd
+                    }
+                }
+            }) {
             val horizontalLines = cartesianSysPrefs.horizontalLines.reversed()
             val verticalLines = cartesianSysPrefs.verticalLines
 
@@ -117,7 +153,6 @@ fun CartesianSystem(
                     0
                 }
 
-
             val width =
                 when (cartesianSysPrefs.sizePreferences) {
                     is SizePreferences.FixedToWidth -> size.width - startExtraLabelSpace - cartesianSysPrefs.verticalLabelsPreferences.labelAndChartPadding.toPx() - endExtraLabels - 0.5.dp.toPx()
@@ -125,6 +160,7 @@ fun CartesianSystem(
                         size.width - startExtraLabelSpace - cartesianSysPrefs.verticalLabelsPreferences.labelAndChartPadding.toPx() - endExtraLabels
                     else cartesianSysPrefs.sizePreferences.contentSize.toPx()
                 }
+            chartWidth.value = width + endExtraLabels + startExtraLabelSpace
 
             val height =
                 size.height - topExtraLabelSpace - bottomExtraLabelSpace - cartesianSysPrefs.horizontalLabelsPreferences.labelAndChartPadding.toPx()
@@ -151,6 +187,18 @@ fun CartesianSystem(
             val horizontalLinesHeight =
                 (height - sumOfLinesThicknessH - cartesianSysPrefs.horizontalExtraPadding.top.toPx() - cartesianSysPrefs.horizontalExtraPadding.bottom.toPx()) + sumOfLinesThicknessH
 
+            val verticalLinesStartX =
+                startExtraLabelSpace.toFloat() + cartesianSysPrefs.verticalLabelsPreferences.labelAndChartPadding.toPx() + cartesianSysPrefs.verticalExtraPadding.start.toPx()
+            val verticalLinesHeight =
+                height - cartesianSysPrefs.verticalExtraPadding.top.toPx() - cartesianSysPrefs.verticalExtraPadding.bottom.toPx()
+            val verticalLinesWidth =
+                (width - sumOfLinesThicknessV - cartesianSysPrefs.verticalExtraPadding.start.toPx() - cartesianSysPrefs.verticalExtraPadding.end.toPx()) + sumOfLinesThicknessV
+
+            clipRect(left = verticalLinesStartX) {
+                translate(left =startExtraLabelSpace.toFloat() + cartesianSysPrefs.verticalLabelsPreferences.labelAndChartPadding.toPx() + cartesianSysPrefs.horizontalExtraPadding.start.toPx()) {
+
+                }
+            }
             drawHorizontalLines(
                 lines = horizontalLines,
                 startOffset = Offset(
@@ -161,6 +209,7 @@ fun CartesianSystem(
                 width = width,
                 step = stepH
             )
+
 
             drawVerticalLabels(
                 lines = horizontalLines,
@@ -173,46 +222,53 @@ fun CartesianSystem(
                 step = stepH
             )
 
-            drawHorizontalLabels(
-                lines = verticalLines,
-                startOffset = Offset(
-                    startExtraLabelSpace.toFloat() + cartesianSysPrefs.verticalLabelsPreferences.labelAndChartPadding.toPx() + cartesianSysPrefs.verticalExtraPadding.start.toPx(),
-                    height + cartesianSysPrefs.horizontalLabelsPreferences.labelAndChartPadding.toPx()
-                ),
-                drawScope = this,
-                measuredTexts = measuredHorizontalLabels,
-                step = stepV
-            )
+            clipRect(left = verticalLinesStartX) {
+                translate(left = position.value) {
+                    drawVerticalLines(
+                        lines = verticalLines,
+                        startOffset = Offset(
+                            verticalLinesStartX,
+                            topExtraLabelSpace + cartesianSysPrefs.verticalExtraPadding.top.toPx()
+                        ),
+                        drawScope = this,
+                        height = verticalLinesHeight,
+                        step = stepV,
+                        width = verticalLinesWidth
+                    )
 
-            val verticalLinesStartX =
-                startExtraLabelSpace.toFloat() + cartesianSysPrefs.verticalLabelsPreferences.labelAndChartPadding.toPx() + cartesianSysPrefs.verticalExtraPadding.start.toPx()
-            val verticalLinesHeight =
-                height - cartesianSysPrefs.verticalExtraPadding.top.toPx() - cartesianSysPrefs.verticalExtraPadding.bottom.toPx()
-            val verticalLinesWidth =
-                (width - sumOfLinesThicknessV - cartesianSysPrefs.verticalExtraPadding.start.toPx() - cartesianSysPrefs.verticalExtraPadding.end.toPx()) + sumOfLinesThicknessV
+                    drawHorizontalLabels(
+                        lines = verticalLines,
+                        startOffset = Offset(
+                            startExtraLabelSpace.toFloat() + cartesianSysPrefs.verticalLabelsPreferences.labelAndChartPadding.toPx() + cartesianSysPrefs.verticalExtraPadding.start.toPx(),
+                            height + cartesianSysPrefs.horizontalLabelsPreferences.labelAndChartPadding.toPx()
+                        ),
+                        drawScope = this,
+                        measuredTexts = measuredHorizontalLabels,
+                        step = stepV
+                    )
 
-            drawVerticalLines(
-                lines = verticalLines,
-                startOffset = Offset(
-                    verticalLinesStartX,
-                    topExtraLabelSpace + cartesianSysPrefs.verticalExtraPadding.top.toPx()
-                ),
-                drawScope = this,
-                height = verticalLinesHeight,
-                step = stepV,
-                width = verticalLinesWidth
-            )
+                }
+            }
 
             Log.d("TAGHEIGHT", verticalLinesStartX.toString())
-            val firstVerticalLineThickness = verticalLines.filter { it.positionInPercentage == UNSPECIFIED_POSITION }.first().lineThickness
-            val lastVerticalLineThickness = verticalLines.filter { it.positionInPercentage == UNSPECIFIED_POSITION }.last().lineThickness
+            val firstVerticalLineThickness =
+                verticalLines.filter { it.positionInPercentage == UNSPECIFIED_POSITION }
+                    .first().lineThickness
+            val lastVerticalLineThickness =
+                verticalLines.filter { it.positionInPercentage == UNSPECIFIED_POSITION }
+                    .last().lineThickness
 
-            content.invoke(
-                Offset(verticalLinesStartX, horizontalLineStartY),
-                verticalLinesWidth,
-                horizontalLinesHeight,
-                this
-            )
+            clipRect(left = verticalLinesStartX) {
+                translate(left = position.value) {
+                    content.invoke(
+                        Offset(verticalLinesStartX, horizontalLineStartY),
+                        verticalLinesWidth,
+                        horizontalLinesHeight,
+                        this
+                    )
+                }
+            }
+
         }
     }
 }
@@ -427,7 +483,7 @@ private fun drawVerticalLines(
 
                         drawRect(
                             topLeft = Offset(
-                                if (line.positionInPercentage != UNSPECIFIED_POSITION) startOffset.x + (width / 100) * line.positionInPercentage- line.lineThickness.toPx() / 2 else verticalLineXStart,
+                                if (line.positionInPercentage != UNSPECIFIED_POSITION) startOffset.x + (width / 100) * line.positionInPercentage - line.lineThickness.toPx() / 2 else verticalLineXStart,
                                 yPosition
                             ),
                             brush = line.lineBrush,

@@ -234,13 +234,13 @@ class MainActivity : ComponentActivity() {
                             cartesianSysPrefs = CartesianSystemPreferences(
                                 horizontalLines = horizontalLines,
                                 verticalLines = verticalLines,
-
                                 horizontalLabelsPreferences = LabelSizePreferences(
                                     style = TextStyle(fontSize = 10.sp),
                                     labelAndChartPadding = 5.dp
                                 ),
                                 verticalLabelsPreferences = LabelSizePreferences(
                                     style = TextStyle(fontSize = 10.sp),
+                                    labelAndChartPadding = 5.dp
                                 ),
 
                                 horizontalExtraPadding = Padding(bottom = 10.dp, top = 10.dp),
@@ -340,10 +340,10 @@ class MainActivity : ComponentActivity() {
 
                         val points2 = listOf(
                             Point(2f, 3f),
-                            Point(3f, 2f),
-                            Point(4f, 3f),
-                            Point(5f, 2f),
-                            Point(6f, 2f),
+                            Point(4f, 2f),
+                            Point(6f, 3f),
+                            Point(8f, 2f),
+                            Point(10f, 2f),
                         )
                         LineChart(
                             modifier = Modifier
