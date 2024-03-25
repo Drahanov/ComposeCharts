@@ -22,6 +22,7 @@ import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,12 +36,15 @@ import com.chartslib.charts.cartesian.components.HorizontalLine
 import com.chartslib.charts.cartesian.components.LabelSizePreferences
 import com.chartslib.charts.cartesian.components.LineStyle
 import com.chartslib.charts.cartesian.components.Padding
+import com.chartslib.charts.cartesian.components.SizePreferences
 import com.chartslib.charts.cartesian.components.VerticalLine
 import com.chartslib.charts.cartesian.components.VerticalLineAlignment
 import com.chartslib.charts.donut.components.DonutChart
 import com.chartslib.charts.donut.models.DonutSegmentModel
 import com.chartslib.charts.line.components.LineChart
+import com.chartslib.charts.line.components.LineChartWidth
 import com.chartslib.charts.line.models.LineModel
+import com.chartslib.charts.line.models.LineType
 import com.chartslib.charts.line.models.Point
 import com.chartslib.ui.theme.ChartsLibTheme
 import com.chartslib.ui.theme.*
@@ -145,7 +149,7 @@ class MainActivity : ComponentActivity() {
                                 verticalLabelsPreferences = LabelSizePreferences(
                                     style = TextStyle(fontSize = 10.sp),
                                     labelAndChartPadding = 10.dp
-                                )
+                                ),
                             )
                         )
 
@@ -268,12 +272,12 @@ class MainActivity : ComponentActivity() {
 //                        )
 
                         val points = listOf(
-                            Point(0f, 2f),
-                            Point(1f, 3f),
-                            Point(2f, 2f),
+                            Point(0f, 1f),
+                            Point(1f, 2f),
+                            Point(2f, 4f),
                             Point(3f, 3f),
-                            Point(4f, 2f),
-                            Point(5f, 3f),
+                            Point(4f, 1f),
+                            Point(5f, 2f),
                         )
 
                         val max = points.maxOf { it.y }
@@ -339,7 +343,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                         val points2 = listOf(
-                            Point(2f, 3f),
+                            Point(0f, 3f),
                             Point(4f, 2f),
                             Point(6f, 3f),
                             Point(8f, 2f),
@@ -351,13 +355,37 @@ class MainActivity : ComponentActivity() {
                                 .padding(10.dp)
                                 .height(200.dp),
                             lines = listOf(
-                                LineModel(
-                                    points = points
-                                ), LineModel(
-                                    color = Color.Red,
-                                    points = points2
-                                )
+                                LineModel(points = points2, lineType = LineType.CURVED)
                             )
+                        )
+
+                        LineChart(
+                            modifier = Modifier
+                                .background(Color.White)
+                                .padding(10.dp)
+                                .height(200.dp),
+                            lines = listOf(
+                                LineModel(points = points2, lineType = LineType.CURVED)
+                            ),
+                            cartesianSystemPreferences = CartesianSystemPreferences(
+                                horizontalLines = HorizontalLine.Builder().setSteps(3).build(),
+                                verticalLines = VerticalLine.Builder().setUnspecifiedLinesAmount(3)
+                                    .setSpecifiedLinesAmount(points.size - 1) { index ->
+                                        val list = points2
+                                        val points = points2
+
+                                        VerticalLine(
+                                            lineBrush = SolidColor(Color.LightGray),
+                                            lineThickness = 0.5.dp,
+                                            positionInPercentage = (points[index].x / points.maxOf { it.x }) * 100
+                                        )
+                                    }
+                                    .setLabels { it.toString() }.build(),
+                                sizePreferences = SizePreferences.FixedToWidth,
+                                verticalExtraPadding = Padding(end = 3.dp),
+                                horizontalExtraPadding = Padding(end = 3.dp)
+                            ),
+                            dotRadius = 0.dp
                         )
                     }
                 }

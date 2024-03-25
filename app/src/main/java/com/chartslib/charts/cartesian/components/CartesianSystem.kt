@@ -194,11 +194,7 @@ fun CartesianSystem(
             val verticalLinesWidth =
                 (width - sumOfLinesThicknessV - cartesianSysPrefs.verticalExtraPadding.start.toPx() - cartesianSysPrefs.verticalExtraPadding.end.toPx()) + sumOfLinesThicknessV
 
-            clipRect(left = verticalLinesStartX) {
-                translate(left =startExtraLabelSpace.toFloat() + cartesianSysPrefs.verticalLabelsPreferences.labelAndChartPadding.toPx() + cartesianSysPrefs.horizontalExtraPadding.start.toPx()) {
 
-                }
-            }
             drawHorizontalLines(
                 lines = horizontalLines,
                 startOffset = Offset(
@@ -206,10 +202,9 @@ fun CartesianSystem(
                     horizontalLineStartY
                 ),
                 drawScope = this,
-                width = width,
+                width = width - cartesianSysPrefs.horizontalExtraPadding.start.toPx() - cartesianSysPrefs.horizontalExtraPadding.end.toPx(),
                 step = stepH
             )
-
 
             drawVerticalLabels(
                 lines = horizontalLines,
@@ -250,20 +245,12 @@ fun CartesianSystem(
                 }
             }
 
-            Log.d("TAGHEIGHT", verticalLinesStartX.toString())
-            val firstVerticalLineThickness =
-                verticalLines.filter { it.positionInPercentage == UNSPECIFIED_POSITION }
-                    .first().lineThickness
-            val lastVerticalLineThickness =
-                verticalLines.filter { it.positionInPercentage == UNSPECIFIED_POSITION }
-                    .last().lineThickness
-
             clipRect(left = verticalLinesStartX) {
                 translate(left = position.value) {
                     content.invoke(
-                        Offset(verticalLinesStartX, horizontalLineStartY),
+                        Offset(verticalLinesStartX, horizontalLineStartY +  horizontalLines.first().lineThickness.toPx()),
                         verticalLinesWidth,
-                        horizontalLinesHeight,
+                        horizontalLinesHeight - horizontalLines.first().lineThickness.toPx() - horizontalLines.last().lineThickness.toPx(),
                         this
                     )
                 }

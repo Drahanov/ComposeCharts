@@ -8,4 +8,10 @@ data class LineModel (
     val id: Long = UUID.randomUUID().mostSignificantBits,
     val points: List<Point>,
     val color: Color = Azure,
+    val lineType: LineType = LineType.STRAIGHT
 )
+
+enum class LineType {
+    CURVED,
+    STRAIGHT
+}
