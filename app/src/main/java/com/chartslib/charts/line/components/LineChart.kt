@@ -33,11 +33,11 @@ sealed class LineChartWidth {
 fun LineChart(
     modifier: Modifier,
     lines: List<LineModel>,
-    lineChartSizePreferences: LineChartWidth = LineChartWidth.MatchParent,
+    lineChartSizePreferences: LineChartWidth = LineChartWidth.DpPerValue(2000.dp),
     dotRadius: Dp = 3.dp,
     cartesianSystemPreferences: CartesianSystemPreferences = CartesianSystemPreferences(
         horizontalLines = HorizontalLine.Builder().setSteps(3).build(),
-        verticalLines = VerticalLine.Builder().setUnspecifiedLinesAmount(3)
+        verticalLines = VerticalLine.Builder().setUnspecifiedLinesAmount(2)
             .setSpecifiedLinesAmount(lines.sumOf { it.points.size }) { index ->
                 val list = lines.map { it.points }
                 val points = mutableListOf<Point>()
@@ -48,6 +48,7 @@ fun LineChart(
                 VerticalLine(
                     lineBrush = SolidColor(Color.LightGray),
                     lineThickness = 0.5.dp,
+                    label = "H",
                     positionInPercentage = (points[index].x / points.maxOf { it.x }) * 100
                 )
             }
@@ -126,12 +127,6 @@ fun LineChart(
                         val path = Path().apply {
                             moveTo(line.points.first().x * widthPerValue + start.x,  height - (line.points.first().y - yPointsMin) * heightPerValue + start.y)
                         }
-
-                        drawCircle(
-                            brush = SolidColor(line.color),
-                            center = Offset(line.points.first().x * widthPerValue + start.x, height - (line.points.first().y - yPointsMin) * heightPerValue + start.y),
-                            radius = 10f
-                        )
 
                         for (index in line.points.indices) {
                             if (index == 0) continue

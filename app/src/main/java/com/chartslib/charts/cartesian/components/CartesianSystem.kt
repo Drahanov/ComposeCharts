@@ -1,6 +1,5 @@
 package com.chartslib.charts.cartesian.components
 
-import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Box
@@ -175,13 +174,6 @@ fun CartesianSystem(
                         .map { it.lineThickness })
 
 
-            val stepH =
-                (height - sumOfLinesThicknessH - cartesianSysPrefs.horizontalExtraPadding.top.toPx() - cartesianSysPrefs.horizontalExtraPadding.bottom.toPx()) / (horizontalLines.size - 1)
-
-            val stepV =
-                (width - sumOfLinesThicknessV - cartesianSysPrefs.verticalExtraPadding.start.toPx() - cartesianSysPrefs.verticalExtraPadding.end.toPx()) / (verticalLines.filter { it.positionInPercentage == UNSPECIFIED_POSITION }.size - 1)
-
-
             val horizontalLineStartY =
                 topExtraLabelSpace + cartesianSysPrefs.horizontalExtraPadding.top.toPx()
             val horizontalLinesHeight =
@@ -194,6 +186,11 @@ fun CartesianSystem(
             val verticalLinesWidth =
                 (width - sumOfLinesThicknessV - cartesianSysPrefs.verticalExtraPadding.start.toPx() - cartesianSysPrefs.verticalExtraPadding.end.toPx()) + sumOfLinesThicknessV
 
+            val stepH =
+                (height - sumOfLinesThicknessH - cartesianSysPrefs.horizontalExtraPadding.top.toPx() - cartesianSysPrefs.horizontalExtraPadding.bottom.toPx()) / (horizontalLines.size - 1)
+
+            val stepV =
+                (width - sumOfLinesThicknessV - cartesianSysPrefs.verticalExtraPadding.start.toPx() - cartesianSysPrefs.verticalExtraPadding.end.toPx() - cartesianSysPrefs.fixedGridLines.end.lineThickness.toPx() - cartesianSysPrefs.fixedGridLines.start.lineThickness.toPx()) / (verticalLines.filter { it.positionInPercentage == UNSPECIFIED_POSITION }.size - 1)
 
             drawHorizontalLines(
                 lines = horizontalLines,
@@ -217,39 +214,61 @@ fun CartesianSystem(
                 step = stepH
             )
 
+
+            //draw start fixed line
+
             clipRect(left = verticalLinesStartX) {
                 translate(left = position.value) {
+
+                    drawVerticalLine(
+                        cartesianSysPrefs.fixedGridLines.start,
+                        this,
+                        Offset(verticalLinesStartX, topExtraLabelSpace + cartesianSysPrefs.verticalExtraPadding.top.toPx()),
+                        verticalLinesHeight
+                    )
+
+                    //draw end fixed line
+                    drawVerticalLine(
+                        cartesianSysPrefs.fixedGridLines.end,
+                        this,
+                        Offset(verticalLinesStartX + verticalLinesWidth - cartesianSysPrefs.fixedGridLines.end.lineThickness.toPx(), topExtraLabelSpace + cartesianSysPrefs.verticalExtraPadding.top.toPx()),
+                        verticalLinesHeight
+                    )
+
                     drawVerticalLines(
                         lines = verticalLines,
                         startOffset = Offset(
-                            verticalLinesStartX,
+                            verticalLinesStartX + cartesianSysPrefs.fixedGridLines.start.lineThickness.toPx(),
                             topExtraLabelSpace + cartesianSysPrefs.verticalExtraPadding.top.toPx()
                         ),
                         drawScope = this,
                         height = verticalLinesHeight,
                         step = stepV,
-                        width = verticalLinesWidth
+                        width = verticalLinesWidth - cartesianSysPrefs.fixedGridLines.end.lineThickness.toPx() - cartesianSysPrefs.fixedGridLines.start.lineThickness.toPx()
                     )
 
                     drawHorizontalLabels(
                         lines = verticalLines,
                         startOffset = Offset(
-                            startExtraLabelSpace.toFloat() + cartesianSysPrefs.verticalLabelsPreferences.labelAndChartPadding.toPx() + cartesianSysPrefs.verticalExtraPadding.start.toPx(),
+                            startExtraLabelSpace.toFloat() + cartesianSysPrefs.verticalLabelsPreferences.labelAndChartPadding.toPx() + cartesianSysPrefs.verticalExtraPadding.start.toPx() + cartesianSysPrefs.fixedGridLines.start.lineThickness.toPx(),
                             height + cartesianSysPrefs.horizontalLabelsPreferences.labelAndChartPadding.toPx()
                         ),
                         drawScope = this,
                         measuredTexts = measuredHorizontalLabels,
+                        width = verticalLinesWidth - cartesianSysPrefs.fixedGridLines.end.lineThickness.toPx() - cartesianSysPrefs.fixedGridLines.start.lineThickness.toPx(),
                         step = stepV
                     )
-
                 }
             }
 
             clipRect(left = verticalLinesStartX) {
                 translate(left = position.value) {
                     content.invoke(
-                        Offset(verticalLinesStartX, horizontalLineStartY +  horizontalLines.first().lineThickness.toPx()),
-                        verticalLinesWidth,
+                        Offset(
+                            verticalLinesStartX  + cartesianSysPrefs.fixedGridLines.start.lineThickness.toPx(),
+                            horizontalLineStartY + horizontalLines.first().lineThickness.toPx()
+                        ),
+                        verticalLinesWidth -  cartesianSysPrefs.fixedGridLines.end.lineThickness.toPx() - cartesianSysPrefs.fixedGridLines.start.lineThickness.toPx(),
                         horizontalLinesHeight - horizontalLines.first().lineThickness.toPx() - horizontalLines.last().lineThickness.toPx(),
                         this
                     )
@@ -259,6 +278,7 @@ fun CartesianSystem(
         }
     }
 }
+
 
 /**
  * Returns map of measured labels.
@@ -321,16 +341,27 @@ private fun drawVerticalLabels(
                     }
                 }
 
-            drawText(
-                measuredTexts[lines.indexOf(line)]!!,
-                topLeft = Offset(
-                    startOffset.x,
-                    horizontalLineYStart - labelY
-                )
-            )
+
+            drawLabel(drawScope,Offset(
+                startOffset.x,
+                horizontalLineYStart - labelY
+            ),  measuredTexts[lines.indexOf(line)]!!)
 
             horizontalLineYStart += step + line.lineThickness.toPx()
         }
+    }
+}
+
+private fun drawLabel(
+    drawScope: DrawScope,
+    topLeft: Offset,
+    textLayoutResult: TextLayoutResult
+) {
+    drawScope.run {
+        drawText(
+            textLayoutResult,
+            topLeft = topLeft
+        )
     }
 }
 
@@ -397,7 +428,8 @@ private fun drawHorizontalLabels(
     drawScope: DrawScope,
     measuredTexts: HashMap<Int, TextLayoutResult>,
     startOffset: Offset,
-    step: Float
+    step: Float,
+    width: Float
 ) {
     var verticalLineXStart = startOffset.x
 
@@ -420,7 +452,7 @@ private fun drawHorizontalLabels(
 
             drawText(
                 measuredTexts[lines.indexOf(line)]!!,
-                topLeft = Offset(verticalLineXStart - labelX, startOffset.y)
+                topLeft = Offset((if (line.positionInPercentage != UNSPECIFIED_POSITION) startOffset.x + (width / 100) * line.positionInPercentage - line.lineThickness.toPx() / 2 else verticalLineXStart) - labelX, startOffset.y)
             )
 
             verticalLineXStart += step + line.lineThickness.toPx()
@@ -428,6 +460,19 @@ private fun drawHorizontalLabels(
     }
 }
 
+private fun drawFixedGridLines(
+    drawScope: DrawScope,
+    height: Float,
+    lines: FixedGridLines,
+    start: Offset
+) {
+    drawVerticalLine(
+        lines.start,
+        drawScope,
+        start,
+        height
+    )
+}
 /**
  * Drawing vertical lines.
  * Drawing fixed size of lines which are evenly sprayed along the entire length of y line.
@@ -442,49 +487,59 @@ private fun drawVerticalLines(
 ) {
     drawScope.run {
         var verticalLineXStart = startOffset.x
-
         for (line in lines) {
+            drawVerticalLine(
+                line,
+                drawScope,
+                Offset(
+                    if (line.positionInPercentage != UNSPECIFIED_POSITION) startOffset.x + (width / 100) * line.positionInPercentage - line.lineThickness.toPx() / 2 else verticalLineXStart,
+                    startOffset.y
+                ),
+                height
+            )
+            verticalLineXStart += step + line.lineThickness.toPx()
+        }
+    }
+}
 
-            if (line.isLineVisible)
-                if (line.lineStyle is LineStyle.StrokeLine)
+private fun drawVerticalLine(
+    line: VerticalLine,
+    drawScope: DrawScope,
+    topLeft: Offset,
+    height: Float,
+) {
+    drawScope.run {
+        if (line.isLineVisible) {
+            if (line.lineStyle is LineStyle.StrokeLine)
+                drawRect(
+                    topLeft = topLeft,
+                    brush = line.lineBrush,
+                    size = Size(line.lineThickness.toPx(), height)
+                )
+            else if (line.lineStyle is LineStyle.DashedLine) {
+                val dashLength = line.lineStyle.dashLength.toPx()
+                val spaceLength = line.lineStyle.spaceLength.toPx()
+
+                val countOfDashes = floor(height / (dashLength + spaceLength)).toInt()
+                val spacesTogether = height - countOfDashes * dashLength
+                val space = spacesTogether / (countOfDashes - 1)
+
+                var yPosition = topLeft.y
+                for (i in 0..<countOfDashes) {
                     drawRect(
                         topLeft = Offset(
-                            if (line.positionInPercentage != UNSPECIFIED_POSITION) startOffset.x + (width / 100) * line.positionInPercentage - line.lineThickness.toPx() / 2 else verticalLineXStart,
-                            startOffset.y
+                            topLeft.x,
+                            yPosition
                         ),
                         brush = line.lineBrush,
-                        size = Size(line.lineThickness.toPx(), height)
-                    )
-                else if (line.lineStyle is LineStyle.DashedLine) {
-                    val dashLength = line.lineStyle.dashLength.toPx()
-                    val spaceLength = line.lineStyle.spaceLength.toPx()
-
-                    val countOfDashes = floor(height / (dashLength + spaceLength)).toInt()
-                    val spacesTogether = height - countOfDashes * dashLength
-                    val space = spacesTogether / (countOfDashes - 1)
-
-                    var yPosition = startOffset.y
-                    for (i in 0..<countOfDashes) {
-                        if (line.positionInPercentage != UNSPECIFIED_POSITION)
-                            Log.d("TESTDATA", "cart width" + width.toString())
-
-                        drawRect(
-                            topLeft = Offset(
-                                if (line.positionInPercentage != UNSPECIFIED_POSITION) startOffset.x + (width / 100) * line.positionInPercentage - line.lineThickness.toPx() / 2 else verticalLineXStart,
-                                yPosition
-                            ),
-                            brush = line.lineBrush,
-                            size = Size(
-                                height = if (countOfDashes == 1) height else dashLength,
-                                width = line.lineThickness.toPx()
-                            )
+                        size = Size(
+                            height = if (countOfDashes == 1) height else dashLength,
+                            width = line.lineThickness.toPx()
                         )
-
-                        yPosition += dashLength + space
-                    }
+                    )
+                    yPosition += dashLength + space
                 }
-
-            verticalLineXStart += step + line.lineThickness.toPx()
+            }
         }
     }
 }

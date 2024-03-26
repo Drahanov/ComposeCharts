@@ -83,76 +83,76 @@ class MainActivity : ComponentActivity() {
                     )
 
                     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                        BarChart(
-                            chartConfiguration = BarChartConfiguration(
-                                modifier = Modifier
-                                    .background(Color.White)
-                                    .padding(10.dp)
-                                    .height(200.dp),
-                                columns = listOfData,
-                                paddingBetweenColumns = 0.3f,
-                                axisX = Axis(
-                                    steps = listOfData.size,
-                                    label = { month[it] },
-                                    maxValue = listOfData.size.toFloat()
-                                )
-                            )
-                        )
-
-                        val horizontalLines1 =
-                            Collections.nCopies(5, HorizontalLine())
-                        val verticalLines1 =
-                            Collections.nCopies(5, VerticalLine())
-
-                        CartesianSystem(
-                            modifier = Modifier
-                                .background(Color.White)
-                                .padding(10.dp)
-                                .height(200.dp),
-                            cartesianSysPrefs = CartesianSystemPreferences(
-                                horizontalLines = horizontalLines1,
-                                verticalLines = verticalLines1
-                            )
-                        )
-
-                        val months = listOf(
-                            "April",
-                            "March",
-                            "June",
-                            "October",
-                            "November"
-                        )
-                        val horizontalLines2 = mutableListOf<HorizontalLine>()
-                        repeat(5) {
-                            horizontalLines2.add(HorizontalLine(label = (it * 100).toString())) // every next label is 100 greater than previous
-                        }
-
-                        val verticalLines2 = mutableListOf<VerticalLine>()
-                        repeat(5) {
-                            verticalLines2.add(VerticalLine(label = months[it]))
-                        }
-
-                        CartesianSystem(
-                            modifier = Modifier
-                                .background(Color.White)
-                                .padding(10.dp)
-                                .height(200.dp),
-                            cartesianSysPrefs = CartesianSystemPreferences(
-                                horizontalLines = horizontalLines2,
-                                verticalLines = verticalLines2,
-
-                                horizontalLabelsPreferences = LabelSizePreferences(
-                                    style = TextStyle(fontSize = 10.sp),
-                                    labelAndChartPadding = 20.dp,
-                                    maxWidth = 30.dp
-                                ),
-                                verticalLabelsPreferences = LabelSizePreferences(
-                                    style = TextStyle(fontSize = 10.sp),
-                                    labelAndChartPadding = 10.dp
-                                ),
-                            )
-                        )
-
+//                        BarChart(
+//                            chartConfiguration = BarChartConfiguration(
+//                                modifier = Modifier
+//                                    .background(Color.White)
+//                                    .padding(10.dp)
+//                                    .height(200.dp),
+//                                columns = listOfData,
+//                                paddingBetweenColumns = 0.3f,
+//                                axisX = Axis(
+//                                    steps = listOfData.size,
+//                                    label = { month[it] },
+//                                    maxValue = listOfData.size.toFloat()
+//                                )
+//                            )
+//                        )
+//
+//                        val horizontalLines1 =
+//                            Collections.nCopies(5, HorizontalLine())
+//                        val verticalLines1 =
+//                            Collections.nCopies(5, VerticalLine())
+//
+//                        CartesianSystem(
+//                            modifier = Modifier
+//                                .background(Color.White)
+//                                .padding(10.dp)
+//                                .height(200.dp),
+//                            cartesianSysPrefs = CartesianSystemPreferences(
+//                                horizontalLines = horizontalLines1,
+//                                verticalLines = verticalLines1
+//                            )
+//                        )
+//
+//                        val months = listOf(
+//                            "April",
+//                            "March",
+//                            "June",
+//                            "October",
+//                            "November"
+//                        )
+//                        val horizontalLines2 = mutableListOf<HorizontalLine>()
+//                        repeat(5) {
+//                            horizontalLines2.add(HorizontalLine(label = (it * 100).toString())) // every next label is 100 greater than previous
+//                        }
+//
+//                        val verticalLines2 = mutableListOf<VerticalLine>()
+//                        repeat(5) {
+//                            verticalLines2.add(VerticalLine(label = months[it], lineBrush = SolidColor(Color.Red)))
+//                        }
+//
+//                        CartesianSystem(
+//                            modifier = Modifier
+//                                .background(Color.White)
+//                                .padding(10.dp)
+//                                .height(200.dp),
+//                            cartesianSysPrefs = CartesianSystemPreferences(
+//                                horizontalLines = horizontalLines2,
+//                                verticalLines = verticalLines2,
+//
+//                                horizontalLabelsPreferences = LabelSizePreferences(
+//                                    style = TextStyle(fontSize = 10.sp),
+//                                    labelAndChartPadding = 20.dp,
+//                                    maxWidth = 30.dp
+//                                ),
+//                                verticalLabelsPreferences = LabelSizePreferences(
+//                                    style = TextStyle(fontSize = 10.sp),
+//                                    labelAndChartPadding = 10.dp
+//                                ),
+//                            )
+//                        )
+//
                         val horizontalLines3 = mutableListOf<HorizontalLine>()
                         repeat(7) {
                             if (it == 0) // make the first one stroke
@@ -202,57 +202,57 @@ class MainActivity : ComponentActivity() {
                                 ),
                             )
                         )
-
-                        val horizontalLines = mutableListOf<HorizontalLine>()
-                        repeat(7) {
-                            if (true)
-                                horizontalLines.add(
-                                    HorizontalLine(
-                                        lineStyle = LineStyle.StrokeLine,
-                                        label = it.toString()
-                                    )
-                                )
-                            else
-                                horizontalLines.add(HorizontalLine())
-                        }
-
-                        val verticalLines = mutableListOf<VerticalLine>()
-                        repeat(9) {
-                            if (it % 2 == 0)
-                                verticalLines.add(VerticalLine())
-                            else
-                                verticalLines.add(
-                                    VerticalLine(
-                                        isLineVisible = false,
-                                        label = (it * 100).toString(),
-                                        labelAlignment = VerticalLineAlignment.CENTERED
-                                    )
-                                )
-                        }
 //
-                        CartesianSystem(
-                            modifier = Modifier
-                                .background(Color.White)
-                                .padding(10.dp)
-                                .height(200.dp),
-                            cartesianSysPrefs = CartesianSystemPreferences(
-                                horizontalLines = horizontalLines,
-                                verticalLines = verticalLines,
-                                horizontalLabelsPreferences = LabelSizePreferences(
-                                    style = TextStyle(fontSize = 10.sp),
-                                    labelAndChartPadding = 5.dp
-                                ),
-                                verticalLabelsPreferences = LabelSizePreferences(
-                                    style = TextStyle(fontSize = 10.sp),
-                                    labelAndChartPadding = 5.dp
-                                ),
-
-                                horizontalExtraPadding = Padding(bottom = 10.dp, top = 10.dp),
-                                verticalExtraPadding = Padding(start = 10.dp, end = 10.dp)
-                            )
-                        ) { topLeft, width, height, drawScope ->
-
-                        }
+//                        val horizontalLines = mutableListOf<HorizontalLine>()
+//                        repeat(7) {
+//                            if (true)
+//                                horizontalLines.add(
+//                                    HorizontalLine(
+//                                        lineStyle = LineStyle.StrokeLine,
+//                                        label = it.toString()
+//                                    )
+//                                )
+//                            else
+//                                horizontalLines.add(HorizontalLine())
+//                        }
+//
+//                        val verticalLines = mutableListOf<VerticalLine>()
+//                        repeat(9) {
+//                            if (it % 2 == 0)
+//                                verticalLines.add(VerticalLine())
+//                            else
+//                                verticalLines.add(
+//                                    VerticalLine(
+//                                        isLineVisible = false,
+//                                        label = (it * 100).toString(),
+//                                        labelAlignment = VerticalLineAlignment.CENTERED
+//                                    )
+//                                )
+//                        }
+////
+//                        CartesianSystem(
+//                            modifier = Modifier
+//                                .background(Color.White)
+//                                .padding(10.dp)
+//                                .height(200.dp),
+//                            cartesianSysPrefs = CartesianSystemPreferences(
+//                                horizontalLines = horizontalLines,
+//                                verticalLines = verticalLines,
+//                                horizontalLabelsPreferences = LabelSizePreferences(
+//                                    style = TextStyle(fontSize = 10.sp),
+//                                    labelAndChartPadding = 5.dp
+//                                ),
+//                                verticalLabelsPreferences = LabelSizePreferences(
+//                                    style = TextStyle(fontSize = 10.sp),
+//                                    labelAndChartPadding = 5.dp
+//                                ),
+//
+//                                horizontalExtraPadding = Padding(bottom = 10.dp, top = 10.dp),
+//                                verticalExtraPadding = Padding(start = 10.dp, end = 10.dp)
+//                            )
+//                        ) { topLeft, width, height, drawScope ->
+//
+//                        }
 //
 //                        LineChart(
 //                            modifier = Modifier
@@ -273,74 +273,11 @@ class MainActivity : ComponentActivity() {
 
                         val points = listOf(
                             Point(0f, 1f),
-                            Point(1f, 2f),
-                            Point(2f, 4f),
-                            Point(3f, 3f),
-                            Point(4f, 1f),
-                            Point(5f, 2f),
+                            Point(2f, 2f),
+                            Point(6f, 4f),
+                            Point(8f, 3f),
+                            Point(10f, 1f),
                         )
-
-                        val max = points.maxOf { it.y }
-                        val min = points.minOf { it.y }
-
-                        val steps = 5
-
-                        val diff = max - min
-                        val diffPerValue = diff / (steps - 1)
-
-                        val h = HorizontalLine.Builder()
-                            .setSteps(5).setLabels { position ->
-                                (min + diffPerValue * position).toString()
-                            }.build()
-
-
-                        val listOfData2 =
-                            rememberMutableStateListOf(
-                                DonutSegmentModel(
-                                    value = 29,
-                                    color = Palettes1
-                                ),
-                                DonutSegmentModel(
-                                    value = 10,
-                                    color = Palettes5
-                                ),
-                                DonutSegmentModel(
-                                    value = 21,
-                                    color = Palettes2
-                                ),
-                                DonutSegmentModel(
-                                    value = 32,
-                                    color = Palettes3
-                                ),
-                                DonutSegmentModel(
-                                    value = 10,
-                                    color = Palettes4
-                                )
-                            )
-                        val pieDataList = remember {
-                            mutableStateListOf(
-                                DonutSegmentModel(
-                                    value = 29,
-                                    color = Palettes1
-                                ),
-                                DonutSegmentModel(
-                                    value = 10,
-                                    color = Palettes5
-                                ),
-                                DonutSegmentModel(
-                                    value = 21,
-                                    color = Palettes2
-                                ),
-                                DonutSegmentModel(
-                                    value = 32,
-                                    color = Palettes3
-                                ),
-                                DonutSegmentModel(
-                                    value = 10,
-                                    color = Palettes4
-                                )
-                            )
-                        }
 
                         val points2 = listOf(
                             Point(0f, 3f),
@@ -349,15 +286,106 @@ class MainActivity : ComponentActivity() {
                             Point(8f, 2f),
                             Point(10f, 2f),
                         )
-                        LineChart(
-                            modifier = Modifier
-                                .background(Color.White)
-                                .padding(10.dp)
-                                .height(200.dp),
-                            lines = listOf(
-                                LineModel(points = points2, lineType = LineType.CURVED)
-                            )
-                        )
+//                        val max = points.maxOf { it.y }
+//                        val min = points.minOf { it.y }
+//
+//                        val steps = 5
+//
+//                        val diff = max - min
+//                        val diffPerValue = diff / (steps - 1)
+//
+//                        val h = HorizontalLine.Builder()
+//                            .setSteps(5).setLabels { position ->
+//                                (min + diffPerValue * position).toString()
+//                            }.build()
+//
+//
+//                        val listOfData2 =
+//                            rememberMutableStateListOf(
+//                                DonutSegmentModel(
+//                                    value = 29,
+//                                    color = Palettes1
+//                                ),
+//                                DonutSegmentModel(
+//                                    value = 10,
+//                                    color = Palettes5
+//                                ),
+//                                DonutSegmentModel(
+//                                    value = 21,
+//                                    color = Palettes2
+//                                ),
+//                                DonutSegmentModel(
+//                                    value = 32,
+//                                    color = Palettes3
+//                                ),
+//                                DonutSegmentModel(
+//                                    value = 10,
+//                                    color = Palettes4
+//                                )
+//                            )
+//                        val pieDataList = remember {
+//                            mutableStateListOf(
+//                                DonutSegmentModel(
+//                                    value = 29,
+//                                    color = Palettes1
+//                                ),
+//                                DonutSegmentModel(
+//                                    value = 10,
+//                                    color = Palettes5
+//                                ),
+//                                DonutSegmentModel(
+//                                    value = 21,
+//                                    color = Palettes2
+//                                ),
+//                                DonutSegmentModel(
+//                                    value = 32,
+//                                    color = Palettes3
+//                                ),
+//                                DonutSegmentModel(
+//                                    value = 10,
+//                                    color = Palettes4
+//                                )
+//                            )
+//                        }
+//
+//                        LineChart(
+//                            modifier = Modifier
+//                                .background(Color.White)
+//                                .padding(10.dp)
+//                                .height(200.dp),
+//                            lines = listOf(
+//                                LineModel(points = points2, lineType = LineType.CURVED)
+//                            )
+//                        )
+//
+//                        LineChart(
+//                            modifier = Modifier
+//                                .background(Color.White)
+//                                .padding(10.dp)
+//                                .height(200.dp),
+//                            lines = listOf(
+//                                LineModel(points = points2, lineType = LineType.CURVED)
+//                            ),
+//                            cartesianSystemPreferences = CartesianSystemPreferences(
+//                                horizontalLines = HorizontalLine.Builder().setSteps(3).build(),
+//                                verticalLines = VerticalLine.Builder().setUnspecifiedLinesAmount(2)
+//                                    .setSpecifiedLinesAmount(points.size - 1) { index ->
+//                                        val list = points2
+//                                        val points = points2
+//
+//                                        VerticalLine(
+//                                            lineBrush = SolidColor(Color.LightGray),
+//                                            lineThickness = 1.dp,
+//                                            positionInPercentage = (points[index].x / points.maxOf { it.x }) * 100
+//                                        )
+//                                    }
+//                                    .setLabels { it.toString() }.build(),
+//                                sizePreferences = SizePreferences.FixedToWidth,
+//                                verticalExtraPadding = Padding(end = 3.dp),
+//                                horizontalExtraPadding = Padding(end = 3.dp)
+//                            ),
+//                            dotRadius = 3.dp
+//                        )
 
                         LineChart(
                             modifier = Modifier
@@ -365,23 +393,24 @@ class MainActivity : ComponentActivity() {
                                 .padding(10.dp)
                                 .height(200.dp),
                             lines = listOf(
-                                LineModel(points = points2, lineType = LineType.CURVED)
+                                LineModel(points = points2, lineType = LineType.CURVED),
+                                LineModel(points = points, lineType = LineType.CURVED, color = Color.Red)
                             ),
                             cartesianSystemPreferences = CartesianSystemPreferences(
                                 horizontalLines = HorizontalLine.Builder().setSteps(3).build(),
-                                verticalLines = VerticalLine.Builder().setUnspecifiedLinesAmount(3)
+                                verticalLines = VerticalLine.Builder()
                                     .setSpecifiedLinesAmount(points.size - 1) { index ->
                                         val list = points2
                                         val points = points2
 
                                         VerticalLine(
                                             lineBrush = SolidColor(Color.LightGray),
-                                            lineThickness = 0.5.dp,
+                                            lineThickness = 0.dp,
                                             positionInPercentage = (points[index].x / points.maxOf { it.x }) * 100
                                         )
                                     }
                                     .setLabels { it.toString() }.build(),
-                                sizePreferences = SizePreferences.FixedToWidth,
+                                sizePreferences = SizePreferences.SpecificSize(500.dp),
                                 verticalExtraPadding = Padding(end = 3.dp),
                                 horizontalExtraPadding = Padding(end = 3.dp)
                             ),

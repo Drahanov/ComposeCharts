@@ -33,7 +33,16 @@ data class CartesianSystemPreferences(
     val horizontalExtraPadding: Padding = Padding(),
     val verticalExtraPadding: Padding = Padding(),
 
-    val sizePreferences: SizePreferences = SizePreferences.FixedToWidth
+    val sizePreferences: SizePreferences = SizePreferences.FixedToWidth,
+
+    val fixedGridLines: FixedGridLines = FixedGridLines()
+)
+
+data class FixedGridLines(
+    val top: HorizontalLine = HorizontalLine(),
+    val bottom: HorizontalLine = HorizontalLine(),
+    val start: VerticalLine = VerticalLine(lineThickness = 1.dp),
+    val end: VerticalLine = VerticalLine(lineThickness = 1.dp)
 )
 
 sealed class SizePreferences {
