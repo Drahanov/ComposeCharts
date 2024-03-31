@@ -13,42 +13,33 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.chartslib.charts.bar.components.BarChart
-import com.chartslib.charts.bar.models.Axis
-import com.chartslib.charts.bar.models.BarChartConfiguration
 import com.chartslib.charts.bar.models.BarColumnModel
+import com.chartslib.charts.cartesian.components.Cartesian
 import com.chartslib.charts.cartesian.components.CartesianSystem
 import com.chartslib.charts.cartesian.components.CartesianSystemPreferences
 import com.chartslib.charts.cartesian.components.HorizontalLine
-import com.chartslib.charts.cartesian.components.LabelSizePreferences
+import com.chartslib.charts.cartesian.components.LabelPreferences
 import com.chartslib.charts.cartesian.components.LineStyle
-import com.chartslib.charts.cartesian.components.Padding
 import com.chartslib.charts.cartesian.components.SizePreferences
 import com.chartslib.charts.cartesian.components.VerticalLine
 import com.chartslib.charts.cartesian.components.VerticalLineAlignment
-import com.chartslib.charts.donut.components.DonutChart
-import com.chartslib.charts.donut.models.DonutSegmentModel
 import com.chartslib.charts.line.components.LineChart
-import com.chartslib.charts.line.components.LineChartWidth
 import com.chartslib.charts.line.models.LineModel
 import com.chartslib.charts.line.models.LineType
 import com.chartslib.charts.line.models.Point
 import com.chartslib.ui.theme.ChartsLibTheme
-import com.chartslib.ui.theme.*
-import java.util.Collections
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -192,11 +183,11 @@ class MainActivity : ComponentActivity() {
                                 horizontalLines = horizontalLines3,
                                 verticalLines = verticalLines3,
 
-                                horizontalLabelsPreferences = LabelSizePreferences(
+                                horizontalLabelsPreferences = LabelPreferences(
                                     style = TextStyle(fontSize = 10.sp),
                                     labelAndChartPadding = 5.dp
                                 ),
-                                verticalLabelsPreferences = LabelSizePreferences(
+                                verticalLabelsPreferences = LabelPreferences(
                                     style = TextStyle(fontSize = 10.sp),
                                     maxWidth = 20.dp,
                                 ),
@@ -387,6 +378,49 @@ class MainActivity : ComponentActivity() {
 //                            dotRadius = 3.dp
 //                        )
 
+                        Cartesian(
+                            modifier = Modifier
+                                .padding(10.dp)
+                                .height(200.dp)
+                                .clipToBounds(),
+                            sizePreferences = SizePreferences.SpecificSize(800.dp),
+                            horizontalLines = listOf(
+
+                                HorizontalLine(
+                                    lineBrush = SolidColor(Color.Red),
+                                    lineThickness = 1.dp,
+                                    positionInPercentage = 0f,
+                                    label = "asdf"
+                                ),
+                                HorizontalLine(
+                                    lineBrush = SolidColor(Color.Red),
+                                    lineThickness = 1.dp,
+                                    positionInPercentage = 99f,
+                                    label = "asdf"
+                                )
+                            ),
+                            verticalLines = listOf(
+                                VerticalLine(
+                                    lineBrush = SolidColor(Color.Red),
+                                    lineThickness = 1.dp,
+                                    positionInPercentage = 100f,
+                                    label = "asdf"
+                                ),
+
+                                VerticalLine(
+                                    lineBrush = SolidColor(Color.Red),
+                                    lineThickness = 1.dp,
+                                    positionInPercentage = 90f,
+                                    label = "asdf"
+                                ),
+                                VerticalLine(
+                                    lineBrush = SolidColor(Color.Red),
+                                    lineThickness = 1.dp,
+                                    positionInPercentage = 0f,
+                                    label = "asdf"
+                                )
+                            )
+                        )
                         LineChart(
                             modifier = Modifier
                                 .background(Color.White)
@@ -394,25 +428,32 @@ class MainActivity : ComponentActivity() {
                                 .height(200.dp),
                             lines = listOf(
                                 LineModel(points = points2, lineType = LineType.CURVED),
-                                LineModel(points = points, lineType = LineType.CURVED, color = Color.Red)
+                                LineModel(
+                                    points = points,
+                                    lineType = LineType.CURVED,
+                                    color = Color.Red
+                                )
                             ),
                             cartesianSystemPreferences = CartesianSystemPreferences(
-                                horizontalLines = HorizontalLine.Builder().setSteps(3).build(),
+                                horizontalLines = emptyList(),
                                 verticalLines = VerticalLine.Builder()
                                     .setSpecifiedLinesAmount(points.size - 1) { index ->
-                                        val list = points2
-                                        val points = points2
+                                        if (index != 0 || index != points.size - 1) {
+                                            val list = points2
+                                            val points = points2
 
-                                        VerticalLine(
-                                            lineBrush = SolidColor(Color.LightGray),
-                                            lineThickness = 0.dp,
-                                            positionInPercentage = (points[index].x / points.maxOf { it.x }) * 100
-                                        )
+                                            VerticalLine(
+                                                isLineVisible = false
+                                            )
+                                        } else {
+                                            VerticalLine(
+                                                isLineVisible = false
+                                            )
+                                        }
+
                                     }
                                     .setLabels { it.toString() }.build(),
-                                sizePreferences = SizePreferences.SpecificSize(500.dp),
-                                verticalExtraPadding = Padding(end = 3.dp),
-                                horizontalExtraPadding = Padding(end = 3.dp)
+                                sizePreferences = SizePreferences.SpecificSize(2000.dp)
                             ),
                             dotRadius = 0.dp
                         )

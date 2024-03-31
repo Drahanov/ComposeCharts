@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.chartslib.charts.cartesian.components.Cartesian
 import com.chartslib.charts.cartesian.components.CartesianSystem
 import com.chartslib.charts.cartesian.components.CartesianSystemPreferences
 import com.chartslib.charts.cartesian.components.HorizontalLine
@@ -71,9 +72,11 @@ fun LineChart(
     ),
 ) {
     Box(modifier = modifier) {
-        CartesianSystem(
+        Cartesian(
             modifier = Modifier.fillMaxSize(),
-            cartesianSysPrefs = cartesianSystemPreferences,
+            horizontalLines = cartesianSystemPreferences.horizontalLines,
+            verticalLines = cartesianSystemPreferences.verticalLines,
+            sizePreferences = SizePreferences.SpecificSize(1000.dp)
         ) { start, width, height, drawScope ->
 
             val xPointsMax = lines.maxOf { it.points.maxOf { it.x } }

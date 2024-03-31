@@ -27,22 +27,22 @@ data class CartesianSystemPreferences(
     val horizontalLines: List<HorizontalLine>,
     val verticalLines: List<VerticalLine>,
 
-    val verticalLabelsPreferences: LabelSizePreferences = LabelSizePreferences(),
-    val horizontalLabelsPreferences: LabelSizePreferences = LabelSizePreferences(),
+    val verticalLabelsPreferences: LabelPreferences = LabelPreferences(),
+    val horizontalLabelsPreferences: LabelPreferences = LabelPreferences(),
 
     val horizontalExtraPadding: Padding = Padding(),
     val verticalExtraPadding: Padding = Padding(),
 
     val sizePreferences: SizePreferences = SizePreferences.FixedToWidth,
 
-    val fixedGridLines: FixedGridLines = FixedGridLines()
+    val fixedGridLines: InitialGridLines = InitialGridLines()
 )
 
-data class FixedGridLines(
+data class InitialGridLines(
     val top: HorizontalLine = HorizontalLine(),
     val bottom: HorizontalLine = HorizontalLine(),
-    val start: VerticalLine = VerticalLine(lineThickness = 1.dp),
-    val end: VerticalLine = VerticalLine(lineThickness = 1.dp)
+    val end: VerticalLine = VerticalLine(),
+    val start: VerticalLine = VerticalLine(isMovable = false)
 )
 
 sealed class SizePreferences {
@@ -66,7 +66,9 @@ data class HorizontalLine(
     val lineThickness: Dp = 1.dp,
     val labelAlignment: HorizontalLineAlignment = HorizontalLineAlignment.CENTERED,
     val label: String = "",
-    val lineStyle: LineStyle = LineStyle.DashedLine()
+    val lineStyle: LineStyle = LineStyle.DashedLine(),
+    val positionInPercentage: Float = UNSPECIFIED_POSITION,
+    val isMovable: Boolean = true
 ) {
     class Builder {
         private var steps: Int = 0
@@ -148,7 +150,8 @@ data class VerticalLine(
     val labelAlignment: VerticalLineAlignment = VerticalLineAlignment.CENTERED,
     val label: String = "",
     val lineStyle: LineStyle = LineStyle.DashedLine(),
-    val positionInPercentage: Float = UNSPECIFIED_POSITION
+    val positionInPercentage: Float = UNSPECIFIED_POSITION,
+    val isMovable: Boolean = true
 ) {
     class Builder {
         private var unspecifiedLinesAmount: Int = 0
@@ -201,7 +204,7 @@ enum class VerticalLineAlignment {
 }
 
 /**
- * [LabelSizePreferences] label configurations.
+ * [LabelPreferences] label configurations.
  *
  * @param style text style.
  * @param maxWidth max width of text.
@@ -209,7 +212,7 @@ enum class VerticalLineAlignment {
  * @param maxHeight max height (if is equal UNSPECIFIED_HEIGHT height will be infinity.
  * @param labelAndChartPadding padding from line (top between first horizontal line and labels and start between vertical and labels).
  */
-data class LabelSizePreferences(
+data class LabelPreferences(
     val style: TextStyle = TextStyle(fontSize = 10.sp),
     val maxLines: Int = 1,
     val maxWidth: Dp = UNSPECIFIED_WIDTH.dp,
