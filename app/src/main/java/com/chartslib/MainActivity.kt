@@ -25,11 +25,16 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.chartslib.charts.bar.components.BarChart
+import com.chartslib.charts.bar.models.Axis
+import com.chartslib.charts.bar.models.BarChartConfiguration
 import com.chartslib.charts.bar.models.BarColumnModel
 import com.chartslib.charts.cartesian.components.Cartesian
 import com.chartslib.charts.cartesian.components.CartesianSystem
 import com.chartslib.charts.cartesian.components.CartesianSystemPreferences
 import com.chartslib.charts.cartesian.components.HorizontalLine
+import com.chartslib.charts.cartesian.components.HorizontalLineAlignment
+import com.chartslib.charts.cartesian.components.InitialGridLines
 import com.chartslib.charts.cartesian.components.LabelPreferences
 import com.chartslib.charts.cartesian.components.LineStyle
 import com.chartslib.charts.cartesian.components.SizePreferences
@@ -39,7 +44,13 @@ import com.chartslib.charts.line.components.LineChart
 import com.chartslib.charts.line.models.LineModel
 import com.chartslib.charts.line.models.LineType
 import com.chartslib.charts.line.models.Point
+import com.chartslib.ui.theme.Azure
 import com.chartslib.ui.theme.ChartsLibTheme
+import com.chartslib.ui.theme.Palettes1
+import com.chartslib.ui.theme.Palettes2
+import com.chartslib.ui.theme.Palettes3
+import com.chartslib.ui.theme.Palettes5
+import com.chartslib.ui.theme.Water
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,21 +85,21 @@ class MainActivity : ComponentActivity() {
                     )
 
                     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-//                        BarChart(
-//                            chartConfiguration = BarChartConfiguration(
-//                                modifier = Modifier
-//                                    .background(Color.White)
-//                                    .padding(10.dp)
-//                                    .height(200.dp),
-//                                columns = listOfData,
-//                                paddingBetweenColumns = 0.3f,
-//                                axisX = Axis(
-//                                    steps = listOfData.size,
-//                                    label = { month[it] },
-//                                    maxValue = listOfData.size.toFloat()
-//                                )
-//                            )
-//                        )
+                        BarChart(
+                            chartConfiguration = BarChartConfiguration(
+                                modifier = Modifier
+                                    .background(Color.White)
+                                    .padding(10.dp)
+                                    .height(200.dp),
+                                columns = listOfData,
+                                paddingBetweenColumns = 0.3f,
+                                axisX = Axis(
+                                    steps = listOfData.size,
+                                    label = { month[it] },
+                                    maxValue = listOfData.size.toFloat()
+                                )
+                            )
+                        )
 //
 //                        val horizontalLines1 =
 //                            Collections.nCopies(5, HorizontalLine())
@@ -144,55 +155,55 @@ class MainActivity : ComponentActivity() {
 //                            )
 //                        )
 //
-                        val horizontalLines3 = mutableListOf<HorizontalLine>()
-                        repeat(7) {
-                            if (it == 0) // make the first one stroke
-                                horizontalLines3.add(HorizontalLine(lineStyle = LineStyle.StrokeLine))
-                            else
-                                horizontalLines3.add(HorizontalLine())
-                        }
-
-                        val verticalLines3 = mutableListOf<VerticalLine>()
-                        repeat(4) {
-                            if (it == 3) {                          //if it last display text before line
-                                verticalLines3.add(
-                                    VerticalLine(
-                                        label = (it * 100).toString(),
-                                        labelAlignment = VerticalLineAlignment.BEFORE_LINE
-                                    )
-                                )
-                            } else if (it == 0) {                   //if it first display text after line
-                                verticalLines3.add(
-                                    VerticalLine(
-                                        label = (it * 100).toString(),
-                                        labelAlignment = VerticalLineAlignment.AFTER_LINE,
-                                        lineStyle = LineStyle.StrokeLine
-                                    )
-                                )
-                            } else {
-                                verticalLines3.add(VerticalLine()) //no text and default line
-                            }
-                        }
-
-                        CartesianSystem(
-                            modifier = Modifier
-                                .background(Color.White)
-                                .padding(10.dp)
-                                .height(200.dp),
-                            cartesianSysPrefs = CartesianSystemPreferences(
-                                horizontalLines = horizontalLines3,
-                                verticalLines = verticalLines3,
-
-                                horizontalLabelsPreferences = LabelPreferences(
-                                    style = TextStyle(fontSize = 10.sp),
-                                    labelAndChartPadding = 5.dp
-                                ),
-                                verticalLabelsPreferences = LabelPreferences(
-                                    style = TextStyle(fontSize = 10.sp),
-                                    maxWidth = 20.dp,
-                                ),
-                            )
-                        )
+//                        val horizontalLines3 = mutableListOf<HorizontalLine>()
+//                        repeat(7) {
+//                            if (it == 0) // make the first one stroke
+//                                horizontalLines3.add(HorizontalLine(lineStyle = LineStyle.StrokeLine))
+//                            else
+//                                horizontalLines3.add(HorizontalLine())
+//                        }
+//
+//                        val verticalLines3 = mutableListOf<VerticalLine>()
+//                        repeat(4) {
+//                            if (it == 3) {                          //if it last display text before line
+//                                verticalLines3.add(
+//                                    VerticalLine(
+//                                        label = (it * 100).toString(),
+//                                        labelAlignment = VerticalLineAlignment.BEFORE_LINE
+//                                    )
+//                                )
+//                            } else if (it == 0) {                   //if it first display text after line
+//                                verticalLines3.add(
+//                                    VerticalLine(
+//                                        label = (it * 100).toString(),
+//                                        labelAlignment = VerticalLineAlignment.AFTER_LINE,
+//                                        lineStyle = LineStyle.StrokeLine
+//                                    )
+//                                )
+//                            } else {
+//                                verticalLines3.add(VerticalLine()) //no text and default line
+//                            }
+//                        }
+//
+//                        CartesianSystem(
+//                            modifier = Modifier
+//                                .background(Color.White)
+//                                .padding(10.dp)
+//                                .height(200.dp),
+//                            cartesianSysPrefs = CartesianSystemPreferences(
+//                                horizontalLines = horizontalLines3,
+//                                verticalLines = verticalLines3,
+//
+//                                horizontalLabelsPreferences = LabelPreferences(
+//                                    style = TextStyle(fontSize = 10.sp),
+//                                    labelAndChartPadding = 5.dp
+//                                ),
+//                                verticalLabelsPreferences = LabelPreferences(
+//                                    style = TextStyle(fontSize = 10.sp),
+//                                    maxWidth = 20.dp,
+//                                ),
+//                            )
+//                        )
 //
 //                        val horizontalLines = mutableListOf<HorizontalLine>()
 //                        repeat(7) {
@@ -266,12 +277,24 @@ class MainActivity : ComponentActivity() {
                             Point(0f, 1f),
                             Point(1f, 2f),
                             Point(2f, 1f),
+                            Point(3f, 3f),
+                            Point(4f, 2f),
                         )
 
                         val points2 = listOf(
-                            Point(0f, 1f),
+                            Point(0f, 3f),
                             Point(1f, 2f),
-                            Point(2f, 1f),
+                            Point(2f, 3f),
+                            Point(3f, 2f),
+                            Point(4f, 1f),
+                        )
+
+                        val points3 = listOf(
+                            Point(0f, 2f),
+                            Point(1f, 1f),
+                            Point(2f, 2f),
+                            Point(3f, 1f),
+                            Point(4f, 3f),
                         )
 //                        val max = points.maxOf { it.y }
 //                        val min = points.minOf { it.y }
@@ -374,80 +397,242 @@ class MainActivity : ComponentActivity() {
 //                            dotRadius = 3.dp
 //                        )
 
-                        Cartesian(
-                            modifier = Modifier
-                                .padding(10.dp)
-                                .height(200.dp)
-                                .clipToBounds(),
-                            sizePreferences = SizePreferences.SpecificSize(800.dp),
-                            horizontalLines = listOf(
-
-                                HorizontalLine(
-                                    lineBrush = SolidColor(Color.Red),
-                                    lineThickness = 1.dp,
-                                    positionInPercentage = 0f,
-                                    label = "asdf"
-                                ),
-                                HorizontalLine(
-                                    lineBrush = SolidColor(Color.Red),
-                                    lineThickness = 1.dp,
-                                    positionInPercentage = 99f,
-                                    label = "asdf"
-                                )
-                            ),
-                            verticalLines = listOf(
-                                VerticalLine(
-                                    lineBrush = SolidColor(Color.Red),
-                                    lineThickness = 1.dp,
-                                    positionInPercentage = 100f,
-                                    label = "asdf"
-                                ),
-
-                                VerticalLine(
-                                    lineBrush = SolidColor(Color.Red),
-                                    lineThickness = 1.dp,
-                                    positionInPercentage = 0f,
-                                    label = "asdf"
-                                )
-                            )
-                        )
+//                        Cartesian(
+//                            modifier = Modifier
+//                                .padding(10.dp)
+//                                .height(200.dp)
+//                                .clipToBounds(),
+//                            sizePreferences = SizePreferences.SpecificSize(800.dp),
+//                            horizontalLines = listOf(
+//
+//                                HorizontalLine(
+//                                    lineBrush = SolidColor(Color.Red),
+//                                    lineThickness = 1.dp,
+//                                    positionInPercentage = 0f,
+//                                    label = "asdf"
+//                                ),
+//                                HorizontalLine(
+//                                    lineBrush = SolidColor(Color.Red),
+//                                    lineThickness = 1.dp,
+//                                    positionInPercentage = 99f,
+//                                    label = "asdf"
+//                                )
+//                            ),
+//                            verticalLines = listOf(
+//                                VerticalLine(
+//                                    lineBrush = SolidColor(Color.Red),
+//                                    lineThickness = 1.dp,
+//                                    positionInPercentage = 100f,
+//                                    label = "asdf"
+//                                ),
+//
+//                                VerticalLine(
+//                                    lineBrush = SolidColor(Color.Red),
+//                                    lineThickness = 1.dp,
+//                                    positionInPercentage = 0f,
+//                                    label = "asdf"
+//                                )
+//                            )
+//                        )
                         LineChart(
                             modifier = Modifier
                                 .background(Color.White)
                                 .padding(10.dp)
                                 .height(200.dp),
                             lines = listOf(
-                                LineModel(points = points2, lineType = LineType.CURVED),
+                                LineModel(points = points2, lineType = LineType.CURVED,   color = Palettes5),
                                 LineModel(
                                     points = points,
                                     lineType = LineType.CURVED,
-                                    color = Color.Red
+                                    color = Palettes1
                                 )
                             ),
                             cartesianSystemPreferences = CartesianSystemPreferences(
-                                horizontalLines = listOf(HorizontalLine(label = "іваф", positionInPercentage = 50f), ),
-                                verticalLines = VerticalLine.Builder()
-                                    .setSpecifiedLinesAmount(points.size - 1) { index ->
-                                        if (index != 0 || index != points.size - 1) {
-                                            val list = points2
-                                            val points = points2
+                                horizontalLines = listOf(
+                                    HorizontalLine(
+                                        isLineVisible = false,
+                                        label = "90",
+                                        positionInPercentage = 0f,
+                                        labelAlignment = HorizontalLineAlignment.UNDER_LINE
+                                    ),
+                                    HorizontalLine(
+                                        isLineVisible = false,
+                                        label = "0",
+                                        positionInPercentage = 100f,
+                                        labelAlignment = HorizontalLineAlignment.ABOVE_LINE
+                                    ),
+                                    HorizontalLine(
+                                        isLineVisible = true,
+                                        label = "30",
+                                        positionInPercentage = 30f,
+                                        labelAlignment = HorizontalLineAlignment.CENTERED
+                                    ),
+                                    HorizontalLine(
+                                        isLineVisible = true,
+                                        label = "60",
+                                        positionInPercentage = 60f,
+                                        labelAlignment = HorizontalLineAlignment.CENTERED
+                                    )
+                                ),
 
-                                            VerticalLine(
-                                                isLineVisible = true,
-                                                label = "Hello",
-                                                positionInPercentage = 50f
-                                            )
-                                        } else {
-                                            VerticalLine(
-                                                isLineVisible = false
-                                            )
-                                        }
-
-                                    }
-                                    .setLabels { it.toString() }.build(),
-                                sizePreferences = SizePreferences.SpecificSize(2000.dp)
+                                verticalLines = listOf(
+                                    VerticalLine(
+                                        isLineVisible = false,
+                                        label = "May",
+                                        positionInPercentage = 0f,
+                                        labelAlignment = VerticalLineAlignment.AFTER_LINE
+                                    ),
+                                    VerticalLine(
+                                        isLineVisible = true,
+                                        label = "April",
+                                        positionInPercentage = 50f,
+                                        labelAlignment = VerticalLineAlignment.CENTERED
+                                    ), VerticalLine(
+                                        isLineVisible = false,
+                                        label = "March",
+                                        positionInPercentage = 100f,
+                                        labelAlignment = VerticalLineAlignment.BEFORE_LINE
+                                    )
+                                ),
+                                sizePreferences = SizePreferences.FixedToWidth
                             ),
-                            dotRadius = 3.dp
+                            dotRadius = 0.dp
+                        )
+
+                        LineChart(
+                            modifier = Modifier
+                                .background(Color.White)
+                                .padding(10.dp)
+                                .height(200.dp),
+                            lines = listOf(
+                                LineModel(points = points2, lineType = LineType.CURVED,   color = Azure),
+                                LineModel(
+                                    points = points,
+                                    lineType = LineType.STRAIGHT,
+                                    color = Azure
+                                )
+                            ),
+                            cartesianSystemPreferences = CartesianSystemPreferences(
+                                horizontalLines = listOf(
+                                    HorizontalLine(
+                                        isLineVisible = false,
+                                        label = "90",
+                                        positionInPercentage = 0f,
+                                        labelAlignment = HorizontalLineAlignment.UNDER_LINE
+                                    ),
+                                    HorizontalLine(
+                                        isLineVisible = false,
+                                        label = "0",
+                                        positionInPercentage = 100f,
+                                        labelAlignment = HorizontalLineAlignment.ABOVE_LINE
+                                    ),
+                                    HorizontalLine(
+                                        isLineVisible = true,
+                                        label = "30",
+                                        positionInPercentage = 30f,
+                                        labelAlignment = HorizontalLineAlignment.CENTERED
+                                    ),
+                                    HorizontalLine(
+                                        isLineVisible = true,
+                                        label = "60",
+                                        positionInPercentage = 60f,
+                                        labelAlignment = HorizontalLineAlignment.CENTERED
+                                    )
+                                ),
+
+                                verticalLines = listOf(
+                                    VerticalLine(
+                                        isLineVisible = false,
+                                        label = "May",
+                                        positionInPercentage = 0f,
+                                        labelAlignment = VerticalLineAlignment.AFTER_LINE
+                                    ),
+                                    VerticalLine(
+                                        isLineVisible = true,
+                                        label = "April",
+                                        positionInPercentage = 50f,
+                                        labelAlignment = VerticalLineAlignment.CENTERED
+                                    ), VerticalLine(
+                                        isLineVisible = false,
+                                        label = "March",
+                                        positionInPercentage = 100f,
+                                        labelAlignment = VerticalLineAlignment.BEFORE_LINE
+                                    )
+                                ),
+                                sizePreferences = SizePreferences.SpecificSize(800.dp)
+                            ),
+                            dotRadius = 0.dp
+                        )
+
+                        LineChart(
+                            modifier = Modifier
+                                .background(Color.White)
+                                .padding(10.dp)
+                                .height(200.dp),
+                            lines = listOf(
+                                LineModel(points = points2, lineType = LineType.STRAIGHT,   color = Palettes3),
+                                LineModel(
+                                    points = points,
+                                    lineType = LineType.STRAIGHT,
+                                    color = Azure
+                                ),
+                                LineModel(
+                                    points = points3,
+                                    lineType = LineType.STRAIGHT,
+                                    color = Palettes1
+                                )
+                            ),
+                            cartesianSystemPreferences = CartesianSystemPreferences(
+                                horizontalLines = listOf(
+                                    HorizontalLine(
+                                        isLineVisible = false,
+                                        label = "90",
+                                        positionInPercentage = 0f,
+                                        labelAlignment = HorizontalLineAlignment.UNDER_LINE,
+                                    ),
+                                    HorizontalLine(
+                                        isLineVisible = false,
+                                        label = "0",
+                                        positionInPercentage = 100f,
+                                        labelAlignment = HorizontalLineAlignment.ABOVE_LINE,
+                                    ),
+                                    HorizontalLine(
+                                        isLineVisible = true,
+                                        label = "30",
+                                        positionInPercentage = 30f,
+                                        labelAlignment = HorizontalLineAlignment.CENTERED
+                                    ),
+                                    HorizontalLine(
+                                        isLineVisible = true,
+                                        label = "60",
+                                        positionInPercentage = 60f,
+                                        labelAlignment = HorizontalLineAlignment.CENTERED
+                                    )
+                                ),
+
+                                verticalLines = listOf(
+                                    VerticalLine(
+                                        isLineVisible = false,
+                                        label = "May",
+                                        positionInPercentage = 0f,
+                                        labelAlignment = VerticalLineAlignment.AFTER_LINE
+                                    ),
+                                    VerticalLine(
+                                        isLineVisible = true,
+                                        label = "April",
+                                        positionInPercentage = 50f,
+                                        labelAlignment = VerticalLineAlignment.CENTERED
+                                    ), VerticalLine(
+                                        isLineVisible = false,
+                                        label = "March",
+                                        positionInPercentage = 100f,
+                                        labelAlignment = VerticalLineAlignment.BEFORE_LINE
+                                    )
+                                ),
+                                sizePreferences = SizePreferences.FixedToWidth,
+                                fixedGridLines = InitialGridLines(start = VerticalLine(isMovable = false, lineStyle = LineStyle.StrokeLine), bottom = HorizontalLine(lineStyle = LineStyle.StrokeLine))
+                            ),
+                            dotRadius = 0.dp
                         )
                     }
                 }

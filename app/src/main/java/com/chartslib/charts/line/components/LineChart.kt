@@ -76,7 +76,8 @@ fun LineChart(
             modifier = Modifier.fillMaxSize(),
             horizontalLines = cartesianSystemPreferences.horizontalLines,
             verticalLines = cartesianSystemPreferences.verticalLines,
-            sizePreferences = SizePreferences.FixedToWidth
+            sizePreferences = cartesianSystemPreferences.sizePreferences,
+            initialGridLines = cartesianSystemPreferences.fixedGridLines
         ) { start, width, height, drawScope ->
 
             val xPointsMax = lines.maxOf { it.points.maxOf { it.x } }
