@@ -217,7 +217,7 @@ data class LabelPreferences(
     val maxLines: Int = 1,
     val maxWidth: Dp = UNSPECIFIED_WIDTH.dp,
     val maxHeight: Dp = UNSPECIFIED_HEIGHT.dp,
-    val labelAndChartPadding: Dp = 0.dp,
+    val labelAndChartPadding: Dp = 5.dp,
 )
 
 data class Padding(

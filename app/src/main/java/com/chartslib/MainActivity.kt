@@ -264,18 +264,14 @@ class MainActivity : ComponentActivity() {
 
                         val points = listOf(
                             Point(0f, 1f),
-                            Point(2f, 2f),
-                            Point(6f, 4f),
-                            Point(8f, 3f),
-                            Point(10f, 1f),
+                            Point(1f, 2f),
+                            Point(2f, 1f),
                         )
 
                         val points2 = listOf(
-                            Point(0f, 3f),
-                            Point(4f, 2f),
-                            Point(6f, 3f),
-                            Point(8f, 2f),
-                            Point(10f, 2f),
+                            Point(0f, 1f),
+                            Point(1f, 2f),
+                            Point(2f, 1f),
                         )
 //                        val max = points.maxOf { it.y }
 //                        val min = points.minOf { it.y }
@@ -410,12 +406,6 @@ class MainActivity : ComponentActivity() {
                                 VerticalLine(
                                     lineBrush = SolidColor(Color.Red),
                                     lineThickness = 1.dp,
-                                    positionInPercentage = 90f,
-                                    label = "asdf"
-                                ),
-                                VerticalLine(
-                                    lineBrush = SolidColor(Color.Red),
-                                    lineThickness = 1.dp,
                                     positionInPercentage = 0f,
                                     label = "asdf"
                                 )
@@ -435,7 +425,7 @@ class MainActivity : ComponentActivity() {
                                 )
                             ),
                             cartesianSystemPreferences = CartesianSystemPreferences(
-                                horizontalLines = emptyList(),
+                                horizontalLines = listOf(HorizontalLine(label = "іваф", positionInPercentage = 50f), ),
                                 verticalLines = VerticalLine.Builder()
                                     .setSpecifiedLinesAmount(points.size - 1) { index ->
                                         if (index != 0 || index != points.size - 1) {
@@ -443,7 +433,9 @@ class MainActivity : ComponentActivity() {
                                             val points = points2
 
                                             VerticalLine(
-                                                isLineVisible = false
+                                                isLineVisible = true,
+                                                label = "Hello",
+                                                positionInPercentage = 50f
                                             )
                                         } else {
                                             VerticalLine(
@@ -455,7 +447,7 @@ class MainActivity : ComponentActivity() {
                                     .setLabels { it.toString() }.build(),
                                 sizePreferences = SizePreferences.SpecificSize(2000.dp)
                             ),
-                            dotRadius = 0.dp
+                            dotRadius = 3.dp
                         )
                     }
                 }

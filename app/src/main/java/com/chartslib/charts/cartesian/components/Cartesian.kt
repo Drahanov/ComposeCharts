@@ -109,14 +109,16 @@ fun Cartesian(
                     measuredHorizontalInitialLabels.maxBy { it.value.size.height }.value.size.height
                 ) else 0
 
-            val cartesianHeight = size.height - bottomLabelSpace
+            val cartesianHeight =
+                size.height - bottomLabelSpace - initialGridLines.bottom.lineThickness.toPx() - initialGridLines.top.lineThickness.toPx() - horizontalLabelsPreferences.labelAndChartPadding.toPx()
             val cartesianWidth = when (sizePreferences) {
-                is SizePreferences.FixedToWidth -> size.width - startLabelsSpace - initialGridLines.start.lineThickness.toPx() - initialGridLines.end.lineThickness.toPx()
+                is SizePreferences.FixedToWidth -> size.width - startLabelsSpace - initialGridLines.start.lineThickness.toPx() - initialGridLines.end.lineThickness.toPx() - verticalLabelsPreferences.labelAndChartPadding.toPx()
                 is SizePreferences.SpecificSize -> sizePreferences.contentSize.toPx()
             }
-            chartWidth.value = cartesianWidth + startLabelsSpace
+            chartWidth.value = cartesianWidth + startLabelsSpace + verticalLabelsPreferences.labelAndChartPadding.toPx() + initialGridLines.start.lineThickness.toPx() + initialGridLines.end.lineThickness.toPx()
 
-            val initialStartLineTopLeft = Offset(startLabelsSpace, 0f)
+            val initialStartLineTopLeft =
+                Offset(startLabelsSpace + verticalLabelsPreferences.labelAndChartPadding.toPx(), 0f)
             drawVerticalLine(
                 line = initialGridLines.start,
                 drawScope = this,
@@ -124,66 +126,102 @@ fun Cartesian(
                 height = cartesianHeight
             )
 
-            val initialTopLineTopLeft = Offset(startLabelsSpace, 0f)
-            drawHorizontalLine(
-                line = initialGridLines.top,
+            drawVerticalLine(
+                line = initialGridLines.end,
                 drawScope = this,
-                topLeft = initialTopLineTopLeft,
-                width = cartesianWidth
+                topLeft = Offset(size.width - initialGridLines.end.lineThickness.toPx(), 0f),
+                height = cartesianHeight
             )
+
+            val initialTopLineTopLeft =
+                Offset(startLabelsSpace + verticalLabelsPreferences.labelAndChartPadding.toPx(), 0f)
+
+            clipRect(left = initialTopLineTopLeft.x) {
+                drawHorizontalLine(
+                    line = initialGridLines.top,
+                    drawScope = this,
+                    topLeft = initialTopLineTopLeft,
+                    width = cartesianWidth - initialGridLines.top.lineThickness.toPx(),
+                    position = position.value
+                )
+            }
+
 
             val initialBottomLineTopLeft = Offset(
-                startLabelsSpace,
-                cartesianHeight - initialGridLines.bottom.lineThickness.toPx()
+                startLabelsSpace + verticalLabelsPreferences.labelAndChartPadding.toPx(),
+                cartesianHeight
             )
-            drawHorizontalLine(
-                line = initialGridLines.bottom,
-                drawScope = this,
-                topLeft = initialBottomLineTopLeft,
-                width = cartesianWidth
-            )
+            clipRect(left = initialTopLineTopLeft.x) {
+                drawHorizontalLine(
+                    line = initialGridLines.bottom,
+                    drawScope = this,
+                    topLeft = initialBottomLineTopLeft,
+                    width = cartesianWidth,
+                    position = position.value
+                )
+            }
+
 
             val verticalLinesTopLeft =
-                Offset(startLabelsSpace + initialGridLines.start.lineThickness.toPx(), 0f)
-            val verticalLinesWidth =
-                cartesianWidth - initialGridLines.start.lineThickness.toPx() - initialGridLines.end.lineThickness.toPx()
-            drawVerticalLines(
-                lines = verticalLines,
-                startOffset = verticalLinesTopLeft,
-                drawScope = this,
-                height = cartesianHeight,
-                width = verticalLinesWidth
-            )
+                Offset(
+                    startLabelsSpace + initialGridLines.start.lineThickness.toPx() + verticalLabelsPreferences.labelAndChartPadding.toPx(),
+                    0f
+                )
+            val verticalLinesWidth = cartesianWidth
+
+            clipRect(left = verticalLinesTopLeft.x, right = size.width - initialGridLines.end.lineThickness.toPx()) {
+                drawVerticalLines(
+                    lines = verticalLines,
+                    startOffset = verticalLinesTopLeft,
+                    drawScope = this,
+                    height = cartesianHeight,
+                    width = verticalLinesWidth,
+                    position = position.value
+                )
+
+            }
+
 
             val horizontalLabelsTopLeft =
                 Offset(
-                    startLabelsSpace + initialGridLines.start.lineThickness.toPx(),
-                    cartesianHeight
+                    startLabelsSpace + initialGridLines.start.lineThickness.toPx() + verticalLabelsPreferences.labelAndChartPadding.toPx(),
+                    cartesianHeight + horizontalLabelsPreferences.labelAndChartPadding.toPx()
                 )
             val verticalLabelsTopLeft =
                 Offset(
                     0f,
                     initialGridLines.top.lineThickness.toPx()
                 )
-            drawHorizontalLabels(
-                lines = verticalLines,
-                startOffset = horizontalLabelsTopLeft,
-                drawScope = this,
-                measuredTexts = measuredHorizontalLabels,
-                width = verticalLinesWidth
-            )
+            clipRect(left = initialTopLineTopLeft.x) {
+                drawHorizontalLabels(
+                    lines = verticalLines,
+                    startOffset = horizontalLabelsTopLeft,
+                    drawScope = this,
+                    measuredTexts = measuredHorizontalLabels,
+                    width = verticalLinesWidth,
+                    position = position.value
+                )
+            }
+
 
             val horizontalLinesTopLeft =
-                Offset(startLabelsSpace, initialGridLines.top.lineThickness.toPx())
+                Offset(
+                    startLabelsSpace + verticalLabelsPreferences.labelAndChartPadding.toPx(),
+                    initialGridLines.top.lineThickness.toPx()
+                )
             val horizontalLinesHeight =
-                cartesianHeight - initialGridLines.bottom.lineThickness.toPx() - initialGridLines.top.lineThickness.toPx()
-            drawHorizontalLines(
-                lines = horizontalLines,
-                startOffset = horizontalLinesTopLeft,
-                drawScope = this,
-                height = horizontalLinesHeight,
-                width = cartesianWidth
-            )
+                cartesianHeight
+
+            clipRect(left = verticalLinesTopLeft.x) {
+                drawHorizontalLines(
+                    lines = horizontalLines,
+                    startOffset = horizontalLinesTopLeft,
+                    drawScope = this,
+                    height = horizontalLinesHeight,
+                    width = cartesianWidth,
+                    position = position.value
+                )
+            }
 
             drawVerticalLabels(
                 lines = horizontalLines,
@@ -213,6 +251,7 @@ private fun drawVerticalLines(
     drawScope: DrawScope,
     height: Float,
     width: Float,
+    position: Float
 ) {
     drawScope.run {
         for (line in lines) {
@@ -223,7 +262,8 @@ private fun drawVerticalLines(
                     startOffset.x + (width / 100) * line.positionInPercentage,
                     startOffset.y
                 ),
-                height
+                height,
+                position
             )
         }
     }
@@ -234,7 +274,8 @@ private fun drawHorizontalLines(
     startOffset: Offset,
     drawScope: DrawScope,
     height: Float,
-    width: Float
+    width: Float,
+    position: Float
 ) {
     drawScope.run {
         for (line in lines) {
@@ -243,7 +284,8 @@ private fun drawHorizontalLines(
                     startOffset.x,
                     startOffset.y + (height / 100) * line.positionInPercentage
                 ),
-                width
+                width,
+                position = position
             )
         }
     }
@@ -254,7 +296,7 @@ private fun drawVerticalLabels(
     drawScope: DrawScope,
     measuredTexts: HashMap<Int, TextLayoutResult>,
     startOffset: Offset,
-    height: Float
+    height: Float,
 ) {
     drawScope.run {
         for (line in lines) {
@@ -279,7 +321,8 @@ private fun drawVerticalLabels(
                     startOffset.x,
                     startOffset.y + (height / 100) * line.positionInPercentage - labelX
                 ),
-                drawScope = drawScope
+                drawScope = drawScope,
+                position = 0f
             )
         }
     }
@@ -295,15 +338,14 @@ private fun drawVerticalLine(
     drawScope.run {
         if (line.isLineVisible) {
             if (line.lineStyle is LineStyle.StrokeLine) {
-                clipRect(left = topLeft.x) {
-                    translate(left = position) {
-                        drawRect(
-                            topLeft = topLeft,
-                            brush = line.lineBrush,
-                            size = Size(line.lineThickness.toPx(), height)
-                        )
-                    }
+                translate(left = position) {
+                    drawRect(
+                        topLeft = topLeft,
+                        brush = line.lineBrush,
+                        size = Size(line.lineThickness.toPx(), height)
+                    )
                 }
+
             } else if (line.lineStyle is LineStyle.DashedLine) {
                 val dashLength = line.lineStyle.dashLength.toPx()
                 val spaceLength = line.lineStyle.spaceLength.toPx()
@@ -314,17 +356,20 @@ private fun drawVerticalLine(
 
                 var yPosition = topLeft.y
                 for (i in 0..<countOfDashes) {
-                    drawRect(
-                        topLeft = Offset(
-                            topLeft.x,
-                            yPosition
-                        ),
-                        brush = line.lineBrush,
-                        size = Size(
-                            height = if (countOfDashes == 1) height else dashLength,
-                            width = line.lineThickness.toPx()
+                    translate(left = position) {
+                        drawRect(
+                            topLeft = Offset(
+                                topLeft.x,
+                                yPosition
+                            ),
+                            brush = line.lineBrush,
+                            size = Size(
+                                height = if (countOfDashes == 1) height else dashLength,
+                                width = line.lineThickness.toPx()
+                            )
                         )
-                    )
+                    }
+
                     yPosition += dashLength + space
                 }
             }
@@ -342,14 +387,12 @@ private fun drawHorizontalLine(
     drawScope.run {
         if (line.isLineVisible) {
             if (line.lineStyle is LineStyle.StrokeLine) {
-                clipRect(left = topLeft.x) {
-                    translate(left = position) {
-                        drawRect(
-                            topLeft = topLeft,
-                            brush = line.lineBrush,
-                            size = Size(height = line.lineThickness.toPx(), width = width)
-                        )
-                    }
+                translate(left = position) {
+                    drawRect(
+                        topLeft = topLeft,
+                        brush = line.lineBrush,
+                        size = Size(height = line.lineThickness.toPx(), width = width)
+                    )
                 }
             } else if (line.lineStyle is LineStyle.DashedLine) {
                 val dashLength = line.lineStyle.dashLength.toPx()
@@ -361,17 +404,19 @@ private fun drawHorizontalLine(
 
                 var xPosition = topLeft.x
                 for (i in 0..<countOfDashes) {
-                    drawRect(
-                        topLeft = Offset(
-                            xPosition,
-                            topLeft.y
-                        ),
-                        brush = line.lineBrush,
-                        size = Size(
-                            height = line.lineThickness.toPx(),
-                            width = if (countOfDashes == 1) width else dashLength
+                    translate(left = position) {
+                        drawRect(
+                            topLeft = Offset(
+                                xPosition,
+                                topLeft.y
+                            ),
+                            brush = line.lineBrush,
+                            size = Size(
+                                height = line.lineThickness.toPx(),
+                                width = if (countOfDashes == 1) width else dashLength
+                            )
                         )
-                    )
+                    }
 
                     xPosition += dashLength + space
                 }
@@ -384,9 +429,12 @@ private fun drawLabel(
     measuredText: TextLayoutResult,
     topLeft: Offset,
     drawScope: DrawScope,
+    position: Float
 ) {
     drawScope.run {
-        drawText(measuredText, topLeft = topLeft)
+        translate(left = position) {
+            drawText(measuredText, topLeft = topLeft)
+        }
     }
 }
 
@@ -395,7 +443,8 @@ private fun drawHorizontalLabels(
     drawScope: DrawScope,
     measuredTexts: HashMap<Int, TextLayoutResult>,
     startOffset: Offset,
-    width: Float
+    width: Float,
+    position: Float
 ) {
     drawScope.run {
         for (line in lines) {
@@ -420,7 +469,8 @@ private fun drawHorizontalLabels(
                     startOffset.x + (width / 100) * line.positionInPercentage - labelX,
                     startOffset.y
                 ),
-                drawScope = drawScope
+                drawScope = drawScope,
+                position = position
             )
         }
     }
