@@ -1,4 +1,4 @@
-package com.chartslib.charts.cartesian.components
+package com.drahanov.chartlex.charts.cartesian.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures

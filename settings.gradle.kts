@@ -15,4 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "ChartsLib"
 include(":app")
- 
+include(":chartlex")
